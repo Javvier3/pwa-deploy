@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Pattaya:wght@400;500;600;700');
+@import url('https://fonts.googleapis.com/css2?family=Circular+Std:wght@300;400;500;600;700');
+
+.nav-pills li a:hover {
+    background-color: #FB1506;
+    color: white;
+}
+
+.nav-pills li a{
+    color: #777A84;
+    font-weight: 600;
+}
+
+.styletxthead{
+    font-family: 'Pattaya', sans-serif;
+    color: #3B4276;
+    font-size: xx-large !important;
+}
+
+.spacerdv{
+    margin-top: 8%;
+}
+
+li, span{
+    font-family: 'Circular Std', sans-serif;
+}
+
+.spani{
+    color: #777A84;
+    font-weight: 600;
+}
+
+/* Estilos adicionales para colocar el texto "Administrador" arriba del botón */
+.dropdown {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.text-white.fs-4 {
+    margin-bottom: 2%;
+}
+
+.admonstl{
+    font-family: 'Circular Std', sans-serif;
+    color: #3B4276 !important;
+    font-size: large !important;
+    font-weight: 600 !important;
+}
+
+.text-white.fs-4::before {
+    content: '';
+    display: block;
+    height: 1px;
+    background-color: #777A84;
+    position: absolute;
+    top: -10px;
+    left: 0;
+    right: 0;
+}
+
+
+.btnclose {
+    background-color: #bfbfbf;
+    margin-bottom: 8%;
+    position: relative;
+}

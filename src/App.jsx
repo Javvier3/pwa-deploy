@@ -1,5 +1,5 @@
-import './App.css';
 import Login from './screens/Login/Login';
+import SidebarMenu from './components/Sidebar/SidebarMenu';
 
 function App() {
   return (

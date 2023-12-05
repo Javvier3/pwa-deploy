@@ -1,0 +1,24 @@
+@font-face {
+    font-family: 'CircularSTD';
+    src: local('CircularSTD'), url('../assets/fonts/circular-std-medium-500.ttf') format('truetype');
+  }
+  
+  @font-face {
+    font-family: 'CircularSTDLight';
+    src: local('CircularSTDLight'), url('../assets/fonts/CircularStd-Light.ttf') format('truetype');
+  }
+  
+  @font-face {
+    font-family: 'ProductSansBold';
+    src: local('ProductSansBold'), url('../assets/fonts/PSB.ttf') format('truetype');
+  }
+  
+  @font-face {
+    font-family: 'ProductSansRegular';
+    src: local('ProductSansRegular'), url('../assets/fonts/PSR.ttf') format('truetype');
+  }
+  
+  @font-face {
+    font-family: 'Pattaya';
+    src: local('Pattaya'), url('../assets/fonts/Pattaya-Regular.ttf') format('truetype');
+  }

@@ -1,0 +1,23 @@
+@import url('../../utils/fonts.css');
+
+#outerDiv {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.PT {
+  font-family: Pattaya;
+  font-size: 61px;
+  text-align: center;
+}
+
+.PD {
+  font-family: ProductSansRegular;
+}
+
+.PDInput {
+  font-family: ProductSansRegular;
+  color: rgba(0, 0, 0, 0.7);
+}
+

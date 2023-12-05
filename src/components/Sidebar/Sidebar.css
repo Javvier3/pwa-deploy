@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Pattaya:wght@400;500;600;700');
-@import url('https://fonts.googleapis.com/css2?family=Circular+Std:wght@300;400;500;600;700');
+@import url('../../utils/fonts.css');
 
 .nav-pills li a:hover {
     background-color: #FB1506;

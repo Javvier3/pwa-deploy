@@ -1,19 +1,14 @@
-// Sidebar.js
-
 import React from "react";
 import { useState } from "react";
 import { Button, Layout, theme} from "antd";
-import { Typography } from 'antd';
 import { MenuUnfoldOutlined, MenuOutlined } from '@ant-design/icons'
 import './Sidebar.css';
 import MenuList from "./subcomponents/MenuList";
 import LogoX from "./subcomponents/LogoX";
-import ToggleThemeButton from "./subcomponents/ToggleThemeButton";
 
-const { Header, Sider } = Layout;
-const { Title } = Typography;
+const { Header, Sider, Content } = Layout;
 
-const Sidebar = () => {
+const Sidebar = ({ children }) => {
   const [darkTheme, setDarkTheme] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -56,8 +51,12 @@ const Sidebar = () => {
             <p className="srTitle">Hola, Lorem !</p>
           </div>
         </Header>
-      </Layout>
 
+        <Content style={{ padding: '25px' }}>
+          {/* Aquí puedes agregar el contenido proporcionado por la página */}
+          {children}
+        </Content>
+      </Layout>
     </Layout>
   );
 };

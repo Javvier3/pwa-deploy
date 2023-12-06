@@ -1,20 +1,23 @@
 @import url('../../utils/fonts.css');
 
-.sidebar{
-    font-family: Pattaya;
+.sidebar {
+    font-family: 'Pattaya'; /* Comillas para el nombre de la fuente */
     font-size: 35px;
     text-align: center;
     align-items: center;
-    color: #fff
+    color: #fff;
+    transition: width 0.3s ease;
+    overflow: hidden;
 }
 
-.logo{
+.logo {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 15px;
 }
-.logo-icon{
+
+.logo-icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -22,11 +25,11 @@
 
 .icons {
     text-align: start;
-    font-family: CircularSTD; /* Asegúrate de incluir una fuente de respaldo */
-    font-stretch: 50%; /* Reduce la densidad en un 30% (100% - 30% = 70%) */
+    font-family: 'CircularSTD'; /* Comillas para el nombre de la fuente */
+    font-stretch: 50%;
 }
 
-.menu-bar{
+.menu-bar {
     height: 88vh;
     margin-top: 5px;
     display: flex;
@@ -37,49 +40,29 @@
 }
 
 .icons.menu-bar .anticon {
-    font-size: 1.10em; /* Puedes ajustar el valor según tus necesidades */
+    font-size: 1.10em;
 }
 
-/* Sidebar.css */
+/* Resto de tus estilos... */
 
-.line-divider {
-    height: 1px;
-    background-color: #e0e0e0; /* Color de la línea */
-    margin: 1px 0; /* Margen superior e inferior para ajustar la posición de la línea */
-  }
-  
-
-.toggle-theme-btn{
-    position: absolute;
-    bottom: 30px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-}
-
-.toggle {
-    margin-left: 15px;
-}
-
-.admin-text{
+.admin-text {
     text-align: center;
-    font-family: CircularSTD; /* Asegúrate de incluir una fuente de respaldo */
-    font-stretch: 50%; 
+    font-family: 'CircularSTD'; /* Comillas para el nombre de la fuente */
+    font-stretch: 50%;
     font-size: 10px;
     color: #3B4276;
 }
 
 .srTitle {
     margin-left: 8px;
-    margin-top: auto; /* Establece margen superior automático para centralizar verticalmente */
-    margin-bottom: auto; /* Establece margen inferior automático para centralizar verticalmente */
-    font-family: ProductSansBold;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-family: 'ProductSansBold'; /* Comillas para el nombre de la fuente */
     font-size: 30px;
     color: #3B4276;
-    line-height: 1; /* Hace que la altura de línea sea igual a la altura del contenedor */
+    line-height: 1;
 }
+
 @media screen and (max-width: 480px) {
     .srTitle {
         font-size: 18px;
@@ -99,7 +82,6 @@
 }
 
 @media screen and (min-width: 1025px) {
-    /* Tamaño original para pantallas más grandes */
     .srTitle {
         font-size: 30px;
     }

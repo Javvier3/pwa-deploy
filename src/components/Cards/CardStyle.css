@@ -1,0 +1,16 @@
+@import url('../../utils/fonts.css');
+
+.card-title {
+    font-size: 18px;
+    font-family: 'ProductSansRegular'; 
+    display: flex;
+    justify-content: center;
+}
+
+.card-desc {
+    font-size: 23px;
+    color: #232D42;
+    display: flex;
+    justify-content: center;
+    font-family: 'ProductSansRegular'; 
+}

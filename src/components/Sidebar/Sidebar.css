@@ -1,66 +1,106 @@
 @import url('../../utils/fonts.css');
 
-.nav-pills li a:hover {
-    background-color: #FB1506;
-    color: white;
+.sidebar{
+    font-family: Pattaya;
+    font-size: 35px;
+    text-align: center;
+    align-items: center;
+    color: #fff
 }
 
-.nav-pills li a{
-    color: #777A84;
-    font-weight: 600;
+.logo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+.logo-icon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.styletxthead{
-    font-family: 'Pattaya', sans-serif;
-    color: #3B4276;
-    font-size: xx-large !important;
+.icons {
+    text-align: start;
+    font-family: CircularSTD; /* Asegúrate de incluir una fuente de respaldo */
+    font-stretch: 50%; /* Reduce la densidad en un 30% (100% - 30% = 70%) */
 }
 
-.spacerdv{
-    margin-top: 8%;
-}
-
-li, span{
-    font-family: 'Circular Std', sans-serif;
-}
-
-.spani{
-    color: #777A84;
-    font-weight: 600;
-}
-
-/* Estilos adicionales para colocar el texto "Administrador" arriba del botón */
-.dropdown {
+.menu-bar{
+    height: 88vh;
+    margin-top: 5px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-}
-
-.text-white.fs-4 {
-    margin-bottom: 2%;
-}
-
-.admonstl{
-    font-family: 'Circular Std', sans-serif;
-    color: #3B4276 !important;
-    font-size: large !important;
-    font-weight: 600 !important;
-}
-
-.text-white.fs-4::before {
-    content: '';
-    display: block;
-    height: 1px;
-    background-color: #777A84;
-    position: absolute;
-    top: -10px;
-    left: 0;
-    right: 0;
-}
-
-
-.btnclose {
-    background-color: #bfbfbf;
-    margin-bottom: 8%;
+    gap: 2px;
+    font-size: 1rem;
     position: relative;
+}
+
+.icons.menu-bar .anticon {
+    font-size: 1.10em; /* Puedes ajustar el valor según tus necesidades */
+}
+
+/* Sidebar.css */
+
+.line-divider {
+    height: 1px;
+    background-color: #e0e0e0; /* Color de la línea */
+    margin: 1px 0; /* Margen superior e inferior para ajustar la posición de la línea */
+  }
+  
+
+.toggle-theme-btn{
+    position: absolute;
+    bottom: 30px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.toggle {
+    margin-left: 15px;
+}
+
+.admin-text{
+    text-align: center;
+    font-family: CircularSTD; /* Asegúrate de incluir una fuente de respaldo */
+    font-stretch: 50%; 
+    font-size: 10px;
+    color: #3B4276;
+}
+
+.srTitle {
+    margin-left: 8px;
+    margin-top: auto; /* Establece margen superior automático para centralizar verticalmente */
+    margin-bottom: auto; /* Establece margen inferior automático para centralizar verticalmente */
+    font-family: ProductSansBold;
+    font-size: 30px;
+    color: #3B4276;
+    line-height: 1; /* Hace que la altura de línea sea igual a la altura del contenedor */
+}
+@media screen and (max-width: 480px) {
+    .srTitle {
+        font-size: 18px;
+    }
+}
+
+@media screen and (min-width: 481px) and (max-width: 768px) {
+    .srTitle {
+        font-size: 24px;
+    }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .srTitle {
+        font-size: 28px;
+    }
+}
+
+@media screen and (min-width: 1025px) {
+    /* Tamaño original para pantallas más grandes */
+    .srTitle {
+        font-size: 30px;
+    }
 }

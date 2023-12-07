@@ -16,8 +16,7 @@ root.render(
           itemSelectedBg: '#FB1506',
           colorItemBgSelectedHorizontal: '#FB1506',
           horizontalItemSelectedBg: '#FB1506',
-
-        }
+        },
       }
     }}>
       <App />

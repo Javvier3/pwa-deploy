@@ -52,7 +52,7 @@ const Sidebar = ({ children }) => {
           </div>
         </Header>
 
-        <Content style={{ padding: '25px' }}>
+        <Content style={{ padding: '30px' }}>
           {/* Aquí puedes agregar el contenido proporcionado por la página */}
           {children}
         </Content>

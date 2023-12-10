@@ -17,10 +17,10 @@ const CardInARow = () => {
         <CardViajes />
       </Col>
 
-      
       <Col xs={0} sm={12} md={8} lg={8} xl={8}>
         <CardConductores />
       </Col>
+      
     </>
   );
 };

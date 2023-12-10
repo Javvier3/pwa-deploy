@@ -1,7 +1,13 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Table, Button, Space } from "antd";
-import {PlusOutlined,EyeOutlined,EditOutlined,DeleteOutlined} from "@ant-design/icons";
-import './Table.css';
+import {
+  PlusOutlined,
+  EyeOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
+import "./Table.css";
 
 const CustomTable = () => {
   const columns = [
@@ -32,8 +38,7 @@ const CustomTable = () => {
     {
       title: "Puntos Intermedios",
       dataIndex: "puntosIntermedios",
-      sorter: (a, b) =>
-        a.puntosIntermedios.localeCompare(b.puntosIntermedios),
+      sorter: (a, b) => a.puntosIntermedios.localeCompare(b.puntosIntermedios),
       responsive: ["md", "lg", "xl"],
     },
     {
@@ -83,25 +88,28 @@ const CustomTable = () => {
 
   return (
     <div style={{ overflowX: "auto" }}>
-      <Button
-        type="primary"
-        icon={<PlusOutlined style={{ fontWeight: 'bold' }} />}
-        style={{
-          marginBottom: "16px",
-          fontFamily: 'CircularSTD',
-          background: '#3B4276'
-        }}
-      >
-        Añadir viaje
-      </Button>
+      <Link to="/viajesRegister">
+        <Button
+          type="primary"
+          icon={<PlusOutlined style={{ fontWeight: "bold" }} />}
+          style={{
+            marginBottom: "16px",
+            fontFamily: "CircularSTD",
+            background: "#3B4276",
+          }}
+        >
+          Añadir viaje
+        </Button>
+      </Link>
+
       <Table
         className="tbl-font"
         columns={columns}
         dataSource={data}
         onChange={onChange}
         pagination={{ responsive: true }}
-
       />
+      
     </div>
   );
 };

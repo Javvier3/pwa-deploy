@@ -8,6 +8,7 @@ const Viajes = () => {
   return (
     <Sidebar>
       <Layout>
+        
         {/* Primera fila con las tarjetas */}
         <Row gutter={60}>
           <CardInARow />
@@ -24,6 +25,7 @@ const Viajes = () => {
             <CustomTable />
           </Col>
         </Row>
+
       </Layout>
     </Sidebar>
   );

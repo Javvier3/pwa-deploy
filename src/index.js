@@ -3,12 +3,25 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { ConfigProvider } from 'antd';
+import { BrowserRouter } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <BrowserRouter>
+    <ConfigProvider theme={{
+      components: {
+        Menu:{
+          itemSelectedColor: '#FFF',
+          itemSelectedBg: '#FB1506',
+          colorItemBgSelectedHorizontal: '#FB1506',
+          horizontalItemSelectedBg: '#FB1506',
+        },
+      }
+    }}>
+      <App />
+    </ConfigProvider>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function

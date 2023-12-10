@@ -12,7 +12,7 @@ const Login = () => {
   const logFn = async () => {
     await loginFunction(username, password)
       .then(res => {
-        console.log(res.data.message);
+        console.log(res.data);
         return res;
       })
       .catch(error => {

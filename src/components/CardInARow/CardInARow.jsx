@@ -10,7 +10,7 @@ const CardInARow = () => {
     <>
       
       <Col xs={0} sm={12} md={8} lg={8} xl={8}>
-        <CardUnidades />
+        <CardConductores /> 
       </Col>
       
       <Col xs={24} sm={12} md={8} lg={8} xl={8}>
@@ -18,7 +18,7 @@ const CardInARow = () => {
       </Col>
 
       <Col xs={0} sm={12} md={8} lg={8} xl={8}>
-        <CardConductores />
+        <CardUnidades />
       </Col>
       
     </>

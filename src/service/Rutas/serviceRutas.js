@@ -4,9 +4,9 @@ import { createURL } from "../../utils/environment";
 const accessToken = localStorage.getItem('token');
 
 //Get ruta by id
-export const getRutaById= async (id) => {
+export const retrieveRutas = async (id) => {
   try {
-    const response = await axios.post(
+    const response = await axios.get(
       createURL([`/ruta/${id}`]),
       {
         headers: {

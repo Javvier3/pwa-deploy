@@ -10,6 +10,7 @@ import { getViajeById } from "../../../service/Viajes/serviceViajes";
 const ViajesRegisterAndEdit = ({ isNew }) => {
   const [paradasData, setParadasData] = useState([]);
   const [viajeData, setViajeData] = useState(null);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const { idViaje } = useParams();
 
   useEffect(() => {
@@ -18,7 +19,6 @@ const ViajesRegisterAndEdit = ({ isNew }) => {
         if (!isNew && idViaje) {
           const response = await getViajeById(idViaje);
           setViajeData(response.data.object);
-          setParadasData(response.data.object.ruta.paradas);
         } else {
 
         }
@@ -49,7 +49,15 @@ const ViajesRegisterAndEdit = ({ isNew }) => {
 
           <Row>
             <Col xs={24}>
-              <ParadasTable paradasData={paradasData} setParadasData={setParadasData} />
+              <ParadasTable paradasData={paradasData} 
+              setParadasData={setParadasData} 
+              setViajeData={setViajeData}
+              viajeData={viajeData}
+              selectedRowKeys={selectedRowKeys}
+              setSelectedRowKeys={setSelectedRowKeys}
+              isNew={isNew}
+              idViaje={idViaje}
+              />
             </Col>
           </Row>
           

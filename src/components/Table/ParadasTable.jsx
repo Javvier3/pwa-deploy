@@ -1,18 +1,51 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Table, Button, Space } from "antd";
-import { EditOutlined, DeleteOutlined, PlusOutlined, ArrowLeftOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+  ArrowLeftOutlined,
+} from "@ant-design/icons";
 import "./Table.css";
-import { getRutaById } from "../../service/Rutas/serviceRutas";
+import { getAllParadas } from "../../service/Paradas/serviceParadas";
+import { retrieveRutas } from "../../service/Rutas/serviceRutas";
+import { getViajeById } from "../../service/Viajes/serviceViajes";
 
-const ParadasTable = ({paradasData, setParadasData}) => {
-  const [loading, setLoading] = useState(true);
+const ParadasTable = ({ paradasData, setParadasData, setViajeData, viajeData, selectedRowKeys, setSelectedRowKeys, isNew, idViaje}) => {
+
+  const [rutas, setRutas] = useState([]);
 
   useEffect(() => {
-    const fetchRutaById = async () => {
+    const fetchData = async () => {
       try {
-        const res = await getRutaById();
-        console.log(res.data);
+        if (!isNew && idViaje && viajeData && viajeData.ruta) {
+          const res = await retrieveRutas(viajeData.ruta.idRuta);
+          setRutas(res.data.object);
+    
+          // Extrae los idParada de cada elemento en rutas.paradas
+          const paradasExtracted = res.data.object.paradas.map(parada => parada.idParada);
+    
+          // Configura los idParada como las selectedRowKeys
+          setSelectedRowKeys(paradasExtracted);
+        } else {
+          // En caso de que no sea nuevo o falte el idViaje, puedes manejarlo aquí
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    
+    fetchData();
+  }, [isNew, idViaje, setSelectedRowKeys, viajeData]);
+
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchParadasData= async () => {
+      try {
+        const res = await getAllParadas();
         setParadasData(Array.isArray(res.data.object) ? res.data.object : []); // Asegura que res sea un array
       } catch (error) {
         console.log(error);
@@ -21,8 +54,8 @@ const ParadasTable = ({paradasData, setParadasData}) => {
       }
     };
 
-    fetchRutaById();
-  }, []); 
+    fetchParadasData();
+  }, []);
 
   const columns = [
     {
@@ -51,7 +84,16 @@ const ParadasTable = ({paradasData, setParadasData}) => {
   ];
 
   const onChange = (pagination, filters, sorter, extra) => {
-    console.log("params", pagination, filters, sorter, extra);
+  };
+
+  const onSelectChange = (selectedKeys, selectedRows) => {
+    // Actualiza el estado con las claves seleccionadas
+    setSelectedRowKeys(selectedKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
   };
 
   const noDataMessage = "No hay paradas registradas";
@@ -70,7 +112,7 @@ const ParadasTable = ({paradasData, setParadasData}) => {
         />
       </Link>
 
-      <Link to="/paradasRegister">
+      <Link to="/">
         <Button
           type="primary"
           icon={<PlusOutlined style={{ fontWeight: "bold" }} />}
@@ -80,22 +122,7 @@ const ParadasTable = ({paradasData, setParadasData}) => {
             background: "#FB1506",
           }}
         >
-          Añadir Parada
-        </Button>
-      </Link>
-
-      <Link to="/paradasRegister">
-        <Button
-          type="primary"
-          icon={<PlusOutlined style={{ fontWeight: "bold" }} />}
-          style={{
-            marginBottom: "16px",
-            marginLeft: "61vw",
-            fontFamily: "CircularSTD",
-            background: "#3B4276",
-          }}
-        >
-          Añadir Viaje
+          {viajeData ? "Actualizar Viaje" : "Añadir Viaje"}
         </Button>
       </Link>
 
@@ -105,8 +132,12 @@ const ParadasTable = ({paradasData, setParadasData}) => {
         dataSource={paradasData}
         loading={loading}
         onChange={onChange}
-        pagination={{ responsive: true }}
-        rowKey={(record) => record.idParada} // Proporciona una clave única para cada fila
+        pagination={{
+          responsive: true,
+          pageSize: 5, // Muestra solo 4 elementos por página
+        }}
+        rowKey={(record) => record.idParada}
+        rowSelection={rowSelection}
         locale={{
           emptyText: <div style={{ textAlign: "center" }}>{noDataMessage}</div>,
         }}

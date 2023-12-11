@@ -3,37 +3,11 @@ import { createURL } from "../../utils/environment";
 
 const accessToken = localStorage.getItem('token');
 
-//Create y update
-export const saveOrUpdateParada = async (nombre,desc, lat, lng) => {
-  try {
-    const response = await axios.post(
-      createURL(['/parada/']),
-      {
-        "nombre": nombre,
-        "descripcion": desc,
-        "latitud": lat,
-        "longitud": lng
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
-        }
-      }
-    );
-
-    return response;
-
-  } catch (error) {
-    return error;
-  }
-};
-
-//Get all paradas
-export const getAllParadas = async () => {
+//Get all viajes
+export const getAllViajes = async () => {
   try {
     const response = await axios.get(
-      createURL(['/parada/']),
+      createURL(['/viajes/']),
       {
         headers: {
           'Content-Type': 'application/json',
@@ -48,6 +22,27 @@ export const getAllParadas = async () => {
     return error;
   }
 };
+
+
+export const getViajeById = async (id) => {
+  try {
+    const response = await axios.get(
+      createURL([`/viajes/${id}`]),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    );
+
+    return response;
+
+  } catch (error) {
+    return error;
+  }
+};
+
 
 
 

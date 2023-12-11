@@ -1,15 +1,51 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate  } from "react-router-dom";
 import { Table, Button, Space } from "antd";
-import {
-  PlusOutlined,
-  EyeOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined, EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./Table.css";
+import { getAllViajes } from "../../service/Viajes/serviceViajes";
 
-const CustomTable = () => {
+const CustomTable = ({viajesData, setViajesData}) => {
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate ();
+
+  useEffect(() => {
+    const fetchAllViajes = async () => {
+      try {
+        const res = await getAllViajes();
+        console.log(res.data);
+        setViajesData(Array.isArray(res.data.object) ? res.data.object : []);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllViajes();
+  }, []);
+
+  const handleEditClick = (idViaje) => {
+    navigate(`/viajesRegister/${idViaje}`);
+  };
+
+  const mappedData = viajesData.map((viaje) => ({
+    key: viaje.idViaje.toString(),
+    nombre: viaje.nombre,
+    conductor: viaje.conductor.usuario.nombre,
+    origen: viaje.ruta.paradas[0].nombre,
+    destino: viaje.ruta.paradas[viaje.ruta.paradas.length - 1].nombre,
+    puntosIntermedios: viaje.ruta.paradas.length,
+    tipoUnidad: viaje.vehiculo.tipo,
+    acciones: (
+      <Space size="middle">
+        <Button icon={<EyeOutlined />} />
+        <Button icon={<EditOutlined />} onClick={() => handleEditClick(viaje.idViaje)} />
+        <Button icon={<DeleteOutlined />} />
+      </Space>
+    ),
+  }));
+
   const columns = [
     {
       title: "Nombre",
@@ -38,7 +74,7 @@ const CustomTable = () => {
     {
       title: "Puntos Intermedios",
       dataIndex: "puntosIntermedios",
-      sorter: (a, b) => a.puntosIntermedios.localeCompare(b.puntosIntermedios),
+      sorter: (a, b) => a.puntosIntermedios - b.puntosIntermedios,
       responsive: ["md", "lg", "xl"],
     },
     {
@@ -50,41 +86,15 @@ const CustomTable = () => {
     {
       title: "Acciones",
       dataIndex: "acciones",
-      render: (text, record) => (
-        <Space size="middle">
-          <Button icon={<EyeOutlined />} />
-          <Button icon={<EditOutlined />} />
-          <Button icon={<DeleteOutlined />} />
-        </Space>
-      ),
       responsive: ["xs", "sm", "md"],
-    },
-  ];
-
-  const data = [
-    {
-      key: "1",
-      nombre: "Nombre 1",
-      conductor: "Conductor 1",
-      origen: "Origen 1",
-      destino: "Destino 1",
-      puntosIntermedios: "Puntos 1",
-      tipoUnidad: "Tipo 1",
-    },
-    {
-      key: "2",
-      nombre: "Nombre 2",
-      conductor: "Conductor 2",
-      origen: "Origen 2",
-      destino: "Destino 2",
-      puntosIntermedios: "Puntos 2",
-      tipoUnidad: "Tipo 2",
     },
   ];
 
   const onChange = (pagination, filters, sorter, extra) => {
     console.log("params", pagination, filters, sorter, extra);
   };
+
+  const noDataMessage = "No hay viajes disponibles";
 
   return (
     <div style={{ overflowX: "auto" }}>
@@ -105,11 +115,14 @@ const CustomTable = () => {
       <Table
         className="tbl-font"
         columns={columns}
-        dataSource={data}
+        dataSource={mappedData}
+        loading={loading}
         onChange={onChange}
         pagination={{ responsive: true }}
+        locale={{
+          emptyText: <div style={{ textAlign: "center" }}>{noDataMessage}</div>,
+        }}
       />
-      
     </div>
   );
 };

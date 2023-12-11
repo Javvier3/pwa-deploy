@@ -1,5 +1,5 @@
 import { Menu } from 'antd';
-import { EnvironmentOutlined, CarOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
+import { CalendarOutlined, EnvironmentOutlined, CarOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import '../Sidebar.css';
@@ -17,6 +17,8 @@ const MenuList = ({ darkTheme }) => {
 
     if (key === 'viajes') {
       navigate('/viajes');
+    } else if (key === 'paradasRegister') {
+      navigate('/paradasRegister');
     } else if (key === 'unidades') {
       navigate('/unidades');
     } else if (key === 'conductores') {
@@ -34,7 +36,7 @@ const MenuList = ({ darkTheme }) => {
 
   useEffect(() => {
     const path = location.pathname;
-    if (path === '/viajes' || path === '/unidades' || path === '/conductores' || path === '/logout') {
+    if (path === '/viajes' || path === '/paradasRegister' || path === '/unidades' || path === '/conductores' || path === '/logout') {
       setSelectedKey(path.slice(1)); // Quita la barra inicial para coincidir con las claves
     } else {
       setSelectedKey(null);
@@ -56,8 +58,12 @@ const MenuList = ({ darkTheme }) => {
       onClick={handleMenuClick}
       inlineCollapsed={collapsed}
     >
-      <Menu.Item key="viajes" icon={<EnvironmentOutlined />}>
+      <Menu.Item key="viajes" icon={<CalendarOutlined />}>
         Viajes
+      </Menu.Item>
+
+      <Menu.Item key="paradasRegister" icon={<EnvironmentOutlined />}>
+        Paradas
       </Menu.Item>
 
       <Menu.Item key="unidades" icon={<CarOutlined />}>

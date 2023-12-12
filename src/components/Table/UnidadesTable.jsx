@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Table, Button, Space } from "antd";
 import {
   PlusOutlined,
-  EyeOutlined,
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";

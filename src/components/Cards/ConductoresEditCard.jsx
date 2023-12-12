@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { Card, Select, DatePicker, Col, Row, Input, Upload, Button } from 'antd';
 import {
-  CarOutlined,
   NumberOutlined,
   FontColorsOutlined,
   PictureOutlined,
-  PlusOutlined,
-  ScheduleOutlined,
-  PushpinOutlined
+  EditOutlined,
+  MailOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined
 } from '@ant-design/icons';
 import * as Yup from "yup";
 import Swal from "sweetalert2";
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { Formik, Field, Form } from 'formik';
 import { Link } from "react-router-dom";
 import defaultimg from "../../assets/images/default.jpg"
 import '../../screens/Viajes/Viajes.css';
@@ -20,61 +20,61 @@ const { Option } = Select;
 const { Meta } = Card;
 
 const validationSchema = Yup.object().shape({
-  ak: Yup.string()
-    .min(5, "El alias de la unidad debe contener al menos 5 caracteres")
-    .max(12, "El alias de la unidad es muy grande")
+    name: Yup.string()
     .matches(
-      /^[a-zA-Z0-9]*$/,
-      "El alias de la unidad solo puede contener letras y numeros"
+        /^[a-zA-Z]+$/,
+        "El nombre solo puede contener letras"
     )
-    .required("El campo Alias es requerido"),
-  year: Yup.string()
-    .min(4, "El año debe ser de 4 caracteres")
-    .max(4, "El año debe ser de 4 caracteres")
+    .required("El campo Nombre es requerido"),
+/*
+    bdayDate: Yup.date()
+    .required("La fecha de cumpleaños es requerida")
+    .test(
+        'valid-year',
+        'Por favor, introduce un año válido',
+        (value) => {
+            if (value) {
+            const selectedYear = new Date(value).getFullYear();
+            return String(selectedYear).length === 4;
+            }
+        return true;
+      }
+    )
+    .required("El campo fecha de nacimiento es requerido"),*/
+    phone: Yup.string()
     .matches(
-      /^[0-9]*[1-9][0-9]*$/,
-      "El año solo debe estar compuesto por numeros"
+        /^[0-9]*[1-9][0-9]*$/,
+        "El telefono solo debe estar compuesto por numeros"
     )
-    .required("El campo Año es requerido"),
-  type: Yup.string()
-    .required("El campo Tipo es requerido"),
-  plate: Yup.string()
-    .min(6, "La descripción de la parada debe contener al menos 5 letras")
-    .max(8, "La descripción de la parada es muy grande")
+    .min(10, "El numero telefonico debe contener al menos 10 caracteres")
+    .max(15, "El numero telefonico debe contener maximo 15 caracteres")
+    .required("El campo Telefono es requerido"),
+    email: Yup.string()
+    .email("Por favor, introduce un correo electrónico válido")
+    .required("El campo Correo Electrónico es requerido"),
+    password: Yup.string()
+    .min(8, 'La contraseña debe tener al menos 8 caracteres')
     .matches(
-      /^[a-zA-Z0-9]*$/,
-      "La placa de la unidad solo puede estar compuesta por letras y numeros"
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]+$/,
+        'La contraseña debe contener al menos una letra, un número y un carácter especial'
     )
-    .required("El campo Placa es requerido"),
-  marca: Yup.string()
-    .min(5, "La marca de la unidad debe contener al menos 5 letras")
-    .max(16, "La marca de la unidad es muy grande")
-    .matches(
-      /^[a-zA-Z\s]+$/,
-      "La marca de la unidad solo puede contener letras y espacios"
-    )
-    .required("El campo Marca es requerido"),
-  model: Yup.string()
-    .min(5, "El modelo de la unidad debe contener al menos 5 letras")
-    .max(16, "El modelo de la unidad es muy grande")
-    .matches(
-      /^[a-zA-Z\s]+$/,
-      "El modelo de la unidad solo puede contener letras y espacios"
-    )
-    .required("El campo Modelo es requerido"),
+    .required('El campo Contraseña es requerido'),
+    confirmPassword: Yup.string()
+    .oneOf([Yup.ref('password'), null], 'Las contraseñas deben coincidir')
+    .required('El campo Repetir contraseña es requerido'),
 });
 
-const CardUnidadesRegisterEdit = () => {
+const ConductoresEditCard = () => {
 
   const [markers, setMarkers] = useState([]);
 
   const initialValues = {
-    ak: "",
-    year: "",
-    type: "",
-    plate: "",
-    marca: "",
-    model: "",
+    name: "",
+    bdayDate: "",
+    phone: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   };
   const [image, setImage] = useState(null);
 
@@ -103,7 +103,7 @@ const CardUnidadesRegisterEdit = () => {
     try {
       if (markers && markers.length > 0) {
         const result = await Swal.fire({
-          title: "Seguro de que quieres registrar la unidad?",
+          title: "Seguro de que quieres registrar el conductor?",
           showDenyButton: false,
           showCancelButton: true,
           confirmButtonText: "Registrar",
@@ -143,7 +143,7 @@ const CardUnidadesRegisterEdit = () => {
         Swal.fire({
           icon: "error",
           title: "Error al registrar",
-          text: "No puedes registrar una parada sin coordenadas, por favor, ingresa una ubicación válida.",
+          text: "No puedes registrar al conductor, por favor, verifica los datos ingresados.",
         });
       }
     } catch (error) {
@@ -155,7 +155,7 @@ const CardUnidadesRegisterEdit = () => {
     <>
       <Card
         className="cardsita"
-        title="Editar informacion de la unidad"
+        title="Editar informacion del conductor"
         style={{ height: "100%" }}
       >
 
@@ -210,12 +210,13 @@ const CardUnidadesRegisterEdit = () => {
             />
           </Col>
         </Row>
+
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleFormSubmit}
         >
-          {({ errors }) => (
+          {({ errors, isValid }) => (
             <Form>
               <Row
                 gutter={100}
@@ -224,21 +225,21 @@ const CardUnidadesRegisterEdit = () => {
                 <Col>
 
                   <Row style={{ marginBottom: '18px' }} gutter={[16, 16]}>
-                    <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+                    <Col xs={24}>
                       <Meta
-                        title={
-                          <Row>
-                            Alias<span style={{ color: 'red' }}>*</span>
-                          </Row>
-                        }
+                 title={
+                    <Row>
+                      Nombre<span style={{ color: 'red' }}>*</span> 
+                    </Row>
+                  }
                         description={
                           <Row>
                             <Field
                               type="text"
-                              name="ak"
+                              name="name"
                               as={Input}
                               placeholder="Sin asignar"
-                              prefix={<FontColorsOutlined style={{ color: 'red' }} />}
+                              prefix={<FontColorsOutlined style={{color:'red'}}/>}
                               style={{ width: '100%' }}
                             />
                           </Row>
@@ -246,17 +247,17 @@ const CardUnidadesRegisterEdit = () => {
                       />
                     </Col>
 
-                    <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+                    <Col xs={24}>
                       <Meta
-                        title={
-                          <Row>
-                            Año<span style={{ color: 'red' }}>*</span>
-                          </Row>
-                        }
+                 title={
+                    <Row>
+                      Fecha de nacimiento<span style={{ color: 'red' }}>*</span> 
+                    </Row>
+                  }
                         description={
                           <Row>
                             <DatePicker
-                              picker="year"
+                              picker="bdayDate"
                               placeholder="Año"
                               style={{ width: '100%' }}
                             />
@@ -267,44 +268,44 @@ const CardUnidadesRegisterEdit = () => {
                   </Row>
 
                   <Row style={{ marginBottom: '18px' }} gutter={[16, 16]}>
-                    <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+
+                  <Col xs={24}>
                       <Meta
-                        title={
-                          <Row>
-                            Tipo<span style={{ color: 'red' }}>*</span>
-                          </Row>
-                        }
+                 title={
+                    <Row>
+                      Telefono<span style={{ color: 'red' }}>*</span> 
+                    </Row>
+                  }
                         description={
                           <Row>
-                            <Select
-                              prefix={<CarOutlined />}
-                              placeholder="Tipo"
-                              name="type"
+                            <Field
+                              type="text"
+                              name="phone"
+                              as={Input}
+                              placeholder="Sin asignar"
+                              prefix={<NumberOutlined style={{color:'red'}}/>}
                               style={{ width: '100%' }}
-                            >
-                              <Option value="Automovil">Automóvil</Option>
-                              <Option value="Van">Van</Option>
-                            </Select>
+                            />
                           </Row>
                         }
                       />
                     </Col>
 
-                    <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+                    <Col xs={24}>
                       <Meta
                         title={
-                          <Row>
-                            Placa<span style={{ color: 'red' }}>*</span>
-                          </Row>
+                            <Row>
+                            Correo<span style={{ color: 'red' }}>*</span> 
+                            </Row>
                         }
                         description={
                           <Row>
                             <Field
-                              type="text"
-                              name="plate"
+                              type="email"
+                              name="email"
                               as={Input}
                               placeholder="Sin asignar"
-                              prefix={<NumberOutlined style={{ color: 'red' }} />}
+                              prefix={<MailOutlined style={{color:'red'}}/>}
                             />
                           </Row>
                         }
@@ -316,18 +317,18 @@ const CardUnidadesRegisterEdit = () => {
                     <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                       <Meta
                         title={
-                          <Row>
-                            Marca<span style={{ color: 'red' }}>*</span>
-                          </Row>
+                            <Row>
+                            Contraseña<span style={{ color: 'red' }}>*</span> 
+                            </Row>
                         }
                         description={
                           <Row>
                             <Field
-                              type="text"
-                              name="marca"
-                              as={Input}
+                              type="password"
+                              name="password"
+                              as={Input.Password}
                               placeholder="Sin asignar"
-                              prefix={<CarOutlined style={{ color: 'red' }} />}
+                              iconRender={(visible) => (visible ? <EyeInvisibleOutlined style={{color:'red'}}/> : <EyeOutlined style={{color:'red'}}/>)}
                             />
                           </Row>
                         }
@@ -337,18 +338,18 @@ const CardUnidadesRegisterEdit = () => {
                     <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                       <Meta
                         title={
-                          <Row>
-                            Modelo<span style={{ color: 'red' }}>*</span>
-                          </Row>
+                            <Row>
+                            Repetir contraseña<span style={{ color: 'red' }}>*</span> 
+                            </Row>
                         }
                         description={
                           <Row>
                             <Field
-                              type="text"
-                              name="model"
-                              as={Input}
+                              type="password"
+                              name="confirmPassword"
+                              as={Input.Password}
                               placeholder="Sin asignar"
-                              prefix={<CarOutlined style={{ color: 'red' }} />}
+                              iconRender={(visible) => (visible ? <EyeInvisibleOutlined style={{color:'red'}}/> : <EyeOutlined style={{color:'red'}}/>)}
                             />
                           </Row>
                         }
@@ -367,14 +368,7 @@ const CardUnidadesRegisterEdit = () => {
                     </div>
                   )}
 
-                  <Row
-                    gutter={16}
-                    style={{
-                      marginBottom: '18px',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
+                  <Row gutter={16} style={{ marginBottom: '18px', justifyContent: 'center', alignItems: 'center',}}>
                     <Col>
                       <Link to="/unidades">
                         <Button
@@ -388,17 +382,19 @@ const CardUnidadesRegisterEdit = () => {
                         </Button>
                       </Link>
                     </Col>
+
                     <Col>
                       <Button
                         type="primary"
-                        icon={<PlusOutlined />}
+                        icon={<EditOutlined />}
                         htmlType="submit"
                         style={{
                           fontFamily: 'CircularSTD',
-                          background: '#7280FF',
+                          background: isValid? '#7280FF' : '#B9C0FF',
                         }}
+                        disabled={!isValid}
                       >
-                        Agregar unidad
+                        Editar conductor
                       </Button>
                     </Col>
                   </Row>
@@ -414,4 +410,4 @@ const CardUnidadesRegisterEdit = () => {
   );
 };
 
-export default CardUnidadesRegisterEdit;
+export default ConductoresEditCard;

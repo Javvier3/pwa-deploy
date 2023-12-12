@@ -7,6 +7,9 @@ import ViajesRegisterAndEdit from './screens/Viajes/Subscreens/ViajesRegisterAnd
 import ParadasRegisterAndEdit from './screens/Viajes/Subscreens/ParadasRegisterAndEdit';
 import UnidadesRegister from './screens/Unidades/Subscreens/UnidadesRegister';
 import UnidadesEdit from './screens/Unidades/Subscreens/UnidadesEdit';
+import ConductoresRegister from './screens/Conductores/Subscreens/ConductoresRegister';
+import ConductoresEditCard from './components/Cards/ConductoresEditCard';
+import ConductoresEdit from './screens/Conductores/Subscreens/ConductoresEdit';
 
 function App() {
   return (
@@ -18,6 +21,8 @@ function App() {
       <Route path='/unidadesRegister' element={<UnidadesRegister/>}></Route>
       <Route path='/unidadesEdit' element={<UnidadesEdit/>}></Route>
       <Route path="/conductores" element={<Conductores />} />
+      <Route path='/conductoresRegister' element={<ConductoresRegister />}></Route>
+      <Route path='/conductoresEdit' element={<ConductoresEdit />}></Route>
       <Route path="/unidades" element={<Unidades />} />
       <Route path="/logout" element={<Login />} />
     </Routes>

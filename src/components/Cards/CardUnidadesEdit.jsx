@@ -225,7 +225,11 @@ const { Meta } = Card;
             <Row style={{ marginBottom: '18px' }} gutter={[16, 16]}>
               <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                 <Meta
-                  title="Alias *"
+                 title={
+                  <Row>
+                    Alias<span style={{ color: 'red' }}>*</span> 
+                  </Row>
+                }
                   description={
                     <Row>
                       <Field
@@ -233,7 +237,7 @@ const { Meta } = Card;
                         name="ak"
                         as={Input}
                         placeholder="Sin asignar"
-                        prefix={<FontColorsOutlined />}
+                        prefix={<FontColorsOutlined  style={{color:'red'}}/>}
                         style={{ width: '100%' }}
                       />
                     </Row>
@@ -243,7 +247,11 @@ const { Meta } = Card;
 
               <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                 <Meta
-                  title="Año *"
+                 title={
+                  <Row>
+                    Año<span style={{ color: 'red' }}>*</span> 
+                  </Row>
+                }
                   description={
                     <Row> 
                       <DatePicker
@@ -260,11 +268,15 @@ const { Meta } = Card;
             <Row style={{ marginBottom: '18px' }} gutter={[16, 16]}>
               <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                 <Meta
-                  title="Tipo *"
+                 title={
+                  <Row>
+                    Tipo<span style={{ color: 'red' }}>*</span> 
+                  </Row>
+                }
                   description={
                     <Row>
                       <Select
-                        prefix={<CarOutlined />}
+                        prefix={<CarOutlined  style={{color:'red'}}/>}
                         placeholder="Tipo"
                         name="type"
                         style={{ width: '100%' }}
@@ -279,7 +291,11 @@ const { Meta } = Card;
 
               <Col xs={24} sm={12} md={12} lg={12} xl={12}>
               <Meta
-                  title="Placa *"
+                 title={
+                  <Row>
+                    Placa<span style={{ color: 'red' }}>*</span> 
+                  </Row>
+                }
                   description={
                     <Row>
                       <Field
@@ -287,7 +303,7 @@ const { Meta } = Card;
                         name="plate"
                         as={Input}
                         placeholder="Sin asignar"
-                        prefix={<NumberOutlined />}
+                        prefix={<NumberOutlined  style={{color:'red'}}/>}
                       />
                     </Row>
                   }
@@ -298,7 +314,11 @@ const { Meta } = Card;
             <Row style={{ marginBottom: '18px' }} gutter={[16, 16]}>
               <Col xs={24} sm={12} md={12} lg={12} xl={12}>
               <Meta
-                  title="Marca *"
+                 title={
+                  <Row>
+                    Marca<span style={{ color: 'red' }}>*</span> 
+                  </Row>
+                }
                   description={
                     <Row>
                       <Field
@@ -306,7 +326,7 @@ const { Meta } = Card;
                         name="marca"
                         as={Input}
                         placeholder="Sin asignar"
-                        prefix={<CarOutlined />}
+                        prefix={<CarOutlined  style={{color:'red'}}/>}
                       />
                     </Row>
                   }
@@ -315,7 +335,11 @@ const { Meta } = Card;
 
               <Col xs={24} sm={12} md={12} lg={12} xl={12}>
               <Meta
-                  title="Modelo *"
+                  title={
+                    <Row>
+                      Modelo<span style={{ color: 'red' }}>*</span> 
+                    </Row>
+                  }
                   description={
                     <Row>
                       <Field
@@ -323,7 +347,7 @@ const { Meta } = Card;
                         name="model"
                         as={Input}
                         placeholder="Sin asignar"
-                        prefix={<CarOutlined />}
+                        prefix={<CarOutlined  style={{color:'red'}}/>}
                       />
                     </Row>
                   }

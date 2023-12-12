@@ -7,9 +7,8 @@ import {
   PlusOutlined,
   ArrowLeftOutlined,
 } from "@ant-design/icons";
-import dayjs from "dayjs";
 import "./Table.css";
-import { getAllParadas } from "../../service/Paradas/serviceParadas";
+import { deleteParadasById, getAllParadas } from "../../service/Paradas/serviceParadas";
 import { retrieveRutas, saveRuta, saveRutaByIdRuta } from "../../service/Rutas/serviceRutas";
 import Swal from "sweetalert2";
 import { insertNewViaje, updateViajeById } from "../../service/Viajes/serviceViajes";
@@ -63,7 +62,7 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
   }, [setParadasData]);
 
 
- console.log(nuevoViajeData)
+ console.log(paradasData)
 
  const handleViajeRegisterEdit = async () => {
   try {
@@ -307,7 +306,59 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
 };
 
 
-  
+const handleDeleteParada = async (id) => {
+  try {
+    const confirmDeletion = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción no se puede deshacer',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if (confirmDeletion.isConfirmed) {
+      await deleteParadasById(id)
+        .then((response) => {
+          if (response.status === 200) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Parada eliminada correctamente',
+              showConfirmButton: true,
+            }).then(() => {
+              window.location.href = window.location.href; // Reload the current page
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error al eliminar la parada',
+              text: 'Hubo un error al eliminar la parada, no puedes eliminar una parada que ya pertenezca a un viaje',
+            });
+          }
+        })
+        .catch((error) => {
+          console.error('Error al eliminar la parada:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al eliminar la parada',
+            text: 'Hubo un error al eliminar la parada, por favor inténtalo de nuevo',
+          });
+        });
+    }
+  } catch (error) {
+    console.error('Error al procesar la solicitud:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Hubo un error al procesar la solicitud. Por favor, inténtalo de nuevo.',
+    }).then(() => {
+      //window.location.href = window.location.href; // Reload the current page
+    });
+  }
+};
+
 
   const columns = [
     {
@@ -328,7 +379,7 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
       render: (text, record) => (
         <Space size="middle">
           <Button icon={<EditOutlined />} />
-          <Button icon={<DeleteOutlined />} />
+          <Button icon={<DeleteOutlined />} onClick={()=>{handleDeleteParada(record.idParada)}}/>
         </Space>
       ),
       responsive: ["xs", "sm", "md"],
@@ -386,7 +437,7 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
         onChange={onChange}
         pagination={{
           responsive: true,
-          pageSize: 4, 
+          pageSize: 5, 
         }}
         rowKey={(record) => record.idParada}
         rowSelection={rowSelection}

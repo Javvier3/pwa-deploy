@@ -65,9 +65,13 @@ const CardUnidadesRegisterEdit = () => {
 
   const handleImageChange = (info) => {
     if (info.file.status === 'done') {
-      // La imagen se cargó con éxito
-      setImage(info.file.originFileObj);
+      const imageUrl = URL.createObjectURL(info.file.originFileObj);
+      setImage(imageUrl);
     }
+  };
+
+  const handleRemoveImage = () => {
+    setImage(null);
   };
 
   const dummyRequest = ({ onSuccess }) => {
@@ -140,13 +144,13 @@ const CardUnidadesRegisterEdit = () => {
     <>
       <Card
         className="cardsita"
-        title="Editar informacion de la unidad"
+        title="Informacion de la unidad"
         style={{ height: "100%" }}
       >
 
         <Row style={{ marginBottom: "18px", justifyContent: "center" }} gutter={[16, 16]}>
           <Col xs={24} sm={12} md={8} lg={8} xl={6}>
-            <Meta
+          <Meta
               title="Imagen"
               description={
                 <div style={{ textAlign: 'center', marginBottom: '8px' }}>
@@ -154,15 +158,33 @@ const CardUnidadesRegisterEdit = () => {
                     style={{
                       width: '80px',
                       height: '80px',
-                      borderRadius: '50%',
+                      borderRadius: '12px', // Ajusta el valor según tus preferencias
                       overflow: 'hidden',
                       margin: '0 auto',
                     }}
                   >
                     {image ? (
-                      <img src={URL.createObjectURL(image)} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                      <img
+                        src={image}
+                        alt="Preview"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          borderRadius: '12px', // Ajusta el valor igual que arriba
+                        }}
+                      />
                     ) : (
-                      <img src={defaultimg} alt="Default" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                      <img
+                        src={defaultimg}
+                        alt="Default"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          borderRadius: '12px', // Ajusta el valor igual que arriba
+                        }}
+                      />
                     )}
                   </div>
 
@@ -171,6 +193,7 @@ const CardUnidadesRegisterEdit = () => {
                     customRequest={dummyRequest}
                     showUploadList={true}
                     onChange={handleImageChange}
+                    onRemove={handleRemoveImage}
                     beforeUpload={beforeUpload}
                     accept="image/*"
                     multiple={false}
@@ -182,17 +205,14 @@ const CardUnidadesRegisterEdit = () => {
                     ]}
                     style={{ marginTop: '8px' }}
                   >
-                    <Button
-                      icon={<PictureOutlined />}
-                      style={{ width: '100%' }}
-                    >
+                    <Button icon={<PictureOutlined />} style={{ width: '100%' }}>
                       Seleccionar Imagen
                     </Button>
                   </Upload>
                 </div>
-
               }
             />
+
           </Col>
         </Row>
         <Formik

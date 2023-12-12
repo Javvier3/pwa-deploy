@@ -28,24 +28,10 @@ const validationSchema = Yup.object().shape({
       "El alias de la unidad solo puede contener letras y numeros"
     )
     .required("El campo Alias es requerido"),
-  year: Yup.string()
-    .min(4, "El año debe ser de 4 caracteres")
-    .max(4, "El año debe ser de 4 caracteres")
-    .matches(
-      /^[0-9]*[1-9][0-9]*$/,
-      "El año solo debe estar compuesto por numeros"
-    )
+  year: Yup.date()
     .required("El campo Año es requerido"),
   type: Yup.string()
     .required("El campo Tipo es requerido"),
-  plate: Yup.string()
-    .min(6, "La descripción de la parada debe contener al menos 5 letras")
-    .max(8, "La descripción de la parada es muy grande")
-    .matches(
-      /^[a-zA-Z0-9]*$/,
-      "La placa de la unidad solo puede estar compuesta por letras y numeros"
-    )
-    .required("El campo Placa es requerido"),
   marca: Yup.string()
     .min(5, "La marca de la unidad debe contener al menos 5 letras")
     .max(16, "La marca de la unidad es muy grande")
@@ -72,7 +58,6 @@ const CardUnidadesRegisterEdit = () => {
     ak: "",
     year: "",
     type: "",
-    plate: "",
     marca: "",
     model: "",
   };
@@ -80,9 +65,13 @@ const CardUnidadesRegisterEdit = () => {
 
   const handleImageChange = (info) => {
     if (info.file.status === 'done') {
-      // La imagen se cargó con éxito
-      setImage(info.file.originFileObj);
+      const imageUrl = URL.createObjectURL(info.file.originFileObj);
+      setImage(imageUrl);
     }
+  };
+
+  const handleRemoveImage = () => {
+    setImage(null);
   };
 
   const dummyRequest = ({ onSuccess }) => {
@@ -143,7 +132,7 @@ const CardUnidadesRegisterEdit = () => {
         Swal.fire({
           icon: "error",
           title: "Error al registrar",
-          text: "No puedes registrar una parada sin coordenadas, por favor, ingresa una ubicación válida.",
+          text: "No se registró la unidad, por favor revisa los datos",
         });
       }
     } catch (error) {
@@ -155,13 +144,13 @@ const CardUnidadesRegisterEdit = () => {
     <>
       <Card
         className="cardsita"
-        title="Editar informacion de la unidad"
+        title="Informacion de la unidad"
         style={{ height: "100%" }}
       >
 
         <Row style={{ marginBottom: "18px", justifyContent: "center" }} gutter={[16, 16]}>
           <Col xs={24} sm={12} md={8} lg={8} xl={6}>
-            <Meta
+          <Meta
               title="Imagen"
               description={
                 <div style={{ textAlign: 'center', marginBottom: '8px' }}>
@@ -169,15 +158,33 @@ const CardUnidadesRegisterEdit = () => {
                     style={{
                       width: '80px',
                       height: '80px',
-                      borderRadius: '50%',
+                      borderRadius: '12px', // Ajusta el valor según tus preferencias
                       overflow: 'hidden',
                       margin: '0 auto',
                     }}
                   >
                     {image ? (
-                      <img src={URL.createObjectURL(image)} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                      <img
+                        src={image}
+                        alt="Preview"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          borderRadius: '12px', // Ajusta el valor igual que arriba
+                        }}
+                      />
                     ) : (
-                      <img src={defaultimg} alt="Default" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                      <img
+                        src={defaultimg}
+                        alt="Default"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          borderRadius: '12px', // Ajusta el valor igual que arriba
+                        }}
+                      />
                     )}
                   </div>
 
@@ -186,6 +193,7 @@ const CardUnidadesRegisterEdit = () => {
                     customRequest={dummyRequest}
                     showUploadList={true}
                     onChange={handleImageChange}
+                    onRemove={handleRemoveImage}
                     beforeUpload={beforeUpload}
                     accept="image/*"
                     multiple={false}
@@ -197,17 +205,14 @@ const CardUnidadesRegisterEdit = () => {
                     ]}
                     style={{ marginTop: '8px' }}
                   >
-                    <Button
-                      icon={<PictureOutlined />}
-                      style={{ width: '100%' }}
-                    >
+                    <Button icon={<PictureOutlined />} style={{ width: '100%' }}>
                       Seleccionar Imagen
                     </Button>
                   </Upload>
                 </div>
-
               }
             />
+
           </Col>
         </Row>
         <Formik
@@ -215,7 +220,7 @@ const CardUnidadesRegisterEdit = () => {
           validationSchema={validationSchema}
           onSubmit={handleFormSubmit}
         >
-          {({ errors }) => (
+          {({ errors, isValid }) => (
             <Form>
               <Row
                 gutter={100}
@@ -255,11 +260,16 @@ const CardUnidadesRegisterEdit = () => {
                         }
                         description={
                           <Row>
-                            <DatePicker
-                              picker="year"
-                              placeholder="Año"
-                              style={{ width: '100%' }}
-                            />
+                            <Field name="year">
+                              {({ field, form }) => (
+                                <DatePicker
+                                  {...field}
+                                  placeholder="Año"
+                                  style={{ width: '100%' }}
+                                  onChange={(date) => form.setFieldValue('year', date)}
+                                />
+                              )}
+                            </Field>
                           </Row>
                         }
                       />
@@ -276,36 +286,19 @@ const CardUnidadesRegisterEdit = () => {
                         }
                         description={
                           <Row>
-                            <Select
-                              prefix={<CarOutlined />}
-                              placeholder="Tipo"
-                              name="type"
-                              style={{ width: '100%' }}
-                            >
-                              <Option value="Automovil">Automóvil</Option>
-                              <Option value="Van">Van</Option>
-                            </Select>
-                          </Row>
-                        }
-                      />
-                    </Col>
-
-                    <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                      <Meta
-                        title={
-                          <Row>
-                            Placa<span style={{ color: 'red' }}>*</span>
-                          </Row>
-                        }
-                        description={
-                          <Row>
-                            <Field
-                              type="text"
-                              name="plate"
-                              as={Input}
-                              placeholder="Sin asignar"
-                              prefix={<NumberOutlined style={{ color: 'red' }} />}
-                            />
+                            <Field name="type">
+                              {({ field, form }) => (
+                                <Select
+                                  {...field}
+                                  placeholder="Tipo"
+                                  style={{ width: '100%' }}
+                                  onSelect={(value) => form.setFieldValue('type', value)}
+                                >
+                                  <Option value="Automovil">Automóvil</Option>
+                                  <Option value="Van">Van</Option>
+                                </Select>
+                              )}
+                            </Field>
                           </Row>
                         }
                       />
@@ -395,8 +388,9 @@ const CardUnidadesRegisterEdit = () => {
                         htmlType="submit"
                         style={{
                           fontFamily: 'CircularSTD',
-                          background: '#7280FF',
+                          background: isValid ? '#7280FF' : '#B9C0FF',
                         }}
+                        disabled={!isValid}
                       >
                         Agregar unidad
                       </Button>

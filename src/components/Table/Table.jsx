@@ -118,7 +118,7 @@ const CustomTable = ({viajesData, setViajesData}) => {
         dataSource={mappedData}
         loading={loading}
         onChange={onChange}
-        pagination={{ responsive: true }}
+        pagination={{ responsive: true, pageSize: 4 }}
         locale={{
           emptyText: <div style={{ textAlign: "center" }}>{noDataMessage}</div>,
         }}

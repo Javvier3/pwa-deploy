@@ -28,14 +28,16 @@ const { Meta } = Card;
 
 const CardViajesRegisterEdit = ({nuevoViajeData,selectedRowKeys, isNew, viajeData, selectedConductor, setSelectedConductor, selectedUnidad, setSelectedUnidad, fecha, setFecha,
   setNombreViaje, nombreViaje
+  , onChangedConductor, setOnChangedConductor,
+  onChangedUnidad, setOnChangedUnidad,
+  onChangedDate, setOnChangedDate,
+  onChangedViajeName, setOnChangedViajeName
+
+
 }) => {
   const [conductores, setConductores] = useState([]);
   const [unidades, setUnidades] = useState([]);
   const [loading, setLoading] = useState(false)
-  const [onChangedConductor, setOnChangedConductor] = useState(false)
-  const [onChangedUnidad, setOnChangedUnidad] = useState(false)
-  const [onChangedDate, setOnChangedDate] = useState(false)
-  const [onChangedViajeName, setOnChangedViajeName] = useState(false)
 
   useEffect(() => {
     // Cargar datos de conductores y unidades al montar el componente

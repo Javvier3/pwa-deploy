@@ -23,34 +23,55 @@ const ViajesRegisterAndEdit = ({ isNew }) => {
   const [nombreViaje, setNombreViaje] = useState("")
   const [selectedConductor, setSelectedConductor] = useState(viajeData ? viajeData.conductor.idConductor : "Sin asignar");
   const [selectedUnidad, setSelectedUnidad] = useState(viajeData ? `${viajeData.vehiculo.marca} ${viajeData.vehiculo.modelo} ${viajeData.vehiculo.alias}` : "Sin asignar");
+
+  const [onChangedConductor, setOnChangedConductor] = useState(false)
+  const [onChangedUnidad, setOnChangedUnidad] = useState(false)
+  const [onChangedDate, setOnChangedDate] = useState(false)
+  const [onChangedViajeName, setOnChangedViajeName] = useState(false)
+
   const { idViaje } = useParams();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (!isNew && idViaje) {
-          const response = await getViajeById(idViaje);
-          setViajeData(response.data.object);
-        } else {
-
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      if (!isNew && idViaje) {
+        const response = await getViajeById(idViaje);
+        setViajeData(response.data.object);
+      } else {
+        // Aquí podrías manejar otros casos si es necesario
       }
-    };
-
-    fetchData();
-  }, [isNew, idViaje]);
-
-
-    nuevoViajeData = {
-    "fechaViaje": dayjs(fecha).format("YYYY-MM-DD"),
-    "nombre": nombreViaje,
-    "num_asientos_disponibles": 0,
-    "vehiculo": selectedUnidad,
-    "conductor": selectedConductor
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
-  
+
+  fetchData();
+}, [isNew, idViaje]);
+
+
+
+  if (isNew) {
+    nuevoViajeData = {
+      fechaViaje: dayjs(fecha).format("YYYY-MM-DD"),
+      nombre: nombreViaje,
+      num_asientos_disponibles: 0,
+      vehiculo: selectedUnidad,
+      conductor: selectedConductor,
+    };
+  } else if (!isNew && viajeData) {
+    // Verifica que viajeData tenga datos antes de actualizar nuevoViajeData
+    nuevoViajeData = {
+      fechaViaje: !onChangedDate ? dayjs(viajeData.fechaViaje).format("YYYY-MM-DD") : dayjs(fecha).format("YYYY-MM-DD"),
+      nombre: ( !onChangedViajeName ? viajeData.nombre : nombreViaje),
+      num_asientos_disponibles: 0,
+      vehiculo: !onChangedUnidad ? viajeData.vehiculo.idVehiculo : selectedUnidad,
+      conductor: !onChangedConductor ? viajeData.conductor.idConductor : selectedConductor,
+    };
+  }
+
+
+
+
 
   return (
     <>
@@ -71,6 +92,14 @@ const ViajesRegisterAndEdit = ({ isNew }) => {
                 setSelectedUnidad={setSelectedUnidad}
                 setFecha={setFecha}
                 fecha={fecha}
+                onChangedConductor={onChangedConductor}
+                setOnChangedConductor={setOnChangedConductor}
+                onChangedUnidad={onChangedUnidad}
+                setOnChangedUnidad={setOnChangedUnidad}
+                onChangedDate={onChangedDate}
+                setOnChangedDate={setOnChangedDate}
+                onChangedViajeName={onChangedViajeName}
+                setOnChangedViajeName={setOnChangedViajeName}
                 />
               </Row>
             </Form>
@@ -97,6 +126,14 @@ const ViajesRegisterAndEdit = ({ isNew }) => {
               idViaje={idViaje}
               nuevoViajeData={nuevoViajeData}
               setNuevoViajeData={setNuevoViajeData}
+              onChangedConductor={onChangedConductor}
+              setOnChangedConductor={setOnChangedConductor}
+              onChangedUnidad={onChangedUnidad}
+              setOnChangedUnidad={setOnChangedUnidad}
+              onChangedDate={onChangedDate}
+              setOnChangedDate={setOnChangedDate}
+              onChangedViajeName={onChangedViajeName}
+              setOnChangedViajeName={setOnChangedViajeName}
               />
             </Col>
           </Row>

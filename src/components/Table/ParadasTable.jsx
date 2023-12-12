@@ -15,7 +15,11 @@ import Swal from "sweetalert2";
 import { insertNewViaje, updateViajeById } from "../../service/Viajes/serviceViajes";
 
 
-const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadasData, setViajeData, viajeData, selectedRowKeys, setSelectedRowKeys, isNew, idViaje}) => {
+const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadasData, setViajeData, viajeData, selectedRowKeys, setSelectedRowKeys, isNew, idViaje,
+  onChangedConductor, setOnChangedConductor,
+  onChangedUnidad, setOnChangedUnidad,
+  onChangedDate, setOnChangedDate,
+  onChangedViajeName, setOnChangedViajeName}) => {
 
   const [rutas, setRutas] = useState([]);
   const [loading, setLoading] = useState(false)
@@ -61,116 +65,136 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
 
  console.log(nuevoViajeData)
 
-  const handleViajeRegisterEdit = async () => {
-    try {
-      setLoading(true);
-  
-      if (isNew) {
-        if (selectedRowKeys && selectedRowKeys.length >= 2) {
-          await saveRuta(selectedRowKeys)
-            .then(async (responseRegistroRuta) => {
-              if (responseRegistroRuta.data.error === false) {
-                await insertNewViaje(
-                  nuevoViajeData.fechaViaje,
-                  nuevoViajeData.nombre,
-                  responseRegistroRuta.data.object.idRuta,
-                  nuevoViajeData.vehiculo,
-                  nuevoViajeData.conductor
-                ).then((responseViaje) => {
-                  // Swal de success de viaje
+ const handleViajeRegisterEdit = async () => {
+  try {
+    setLoading(true);
+
+    if (isNew) {
+      if (selectedRowKeys && selectedRowKeys.length >= 2) {
+        await saveRuta(selectedRowKeys)
+          .then(async (responseRegistroRuta) => {
+            if (responseRegistroRuta.data.error === false) {
+              await insertNewViaje(
+                nuevoViajeData.fechaViaje,
+                nuevoViajeData.nombre,
+                responseRegistroRuta.data.object.idRuta,
+                nuevoViajeData.vehiculo,
+                nuevoViajeData.conductor
+              ).then((responseViaje) => {
+                // Swal de success de viaje
+                if (responseViaje.status === 201) {
                   Swal.fire({
                     icon: "success",
                     title: "Viaje añadido exitosamente",
                     showConfirmButton: true,
                   }).then(() => {
-                    console.log(responseViaje)
+                    console.log(responseViaje);
                     window.location.href = "/viajes";
                   });
-                }).catch((error) => {
-                  // Swal de error de viaje
-                  console.log(error);
-                });
-              }
-            }).catch((e) => console.log("Error al registrar la ruta" + e));
-        } else if (
-          selectedRowKeys === undefined ||
-          selectedRowKeys.length === 0 ||
-          selectedRowKeys === null ||
-          Array.isArray(selectedRowKeys)
-        ) {
-          Swal.fire({
-            icon: "error",
-            title: "Error al registrar un nuevo viaje...",
-            text: "Debes seleccionar al menos dos paradas antes de poder registrar un nuevo viaje",
-            fontFamily: "CircularSTD",
-          });
-        }
-      } else {
-        console.log(viajeData)
-        if (selectedRowKeys && selectedRowKeys.length >= 2) {
-          await saveRutaByIdRuta(viajeData.ruta.idRuta, selectedRowKeys)
-            .then(async (responseRegistroRuta) => {
-              if (responseRegistroRuta.data.error === false) {
-                  await updateViajeById(
-                    nuevoViajeData.fechaViaje,
-                    nuevoViajeData.nombre,
-                    nuevoViajeData.ruta,
-                    nuevoViajeData.vehiculo,
-                    nuevoViajeData.conductor,
-                    viajeData.idViaje
-                  ).then(async (responseUpdateViaje) => {
-                    await Swal.fire({
-                      icon: "success",
-                      title: "Viaje actualizado exitosamente",
-                      showConfirmButton: true,
-                    }).then(() => {
-                      console.log(responseUpdateViaje)
+                }
+              }).catch((error) => {
+                // Swal de error de viaje
+                console.log(error);
+                Swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Hubo un error al registrar el viaje, por favor inténtalo de nuevo",
+                })
+                  .then(() => {
+                    window.location.href = "/viajes";
+                  });
+                
+              });
+            }
+          }).catch((e) => console.log("Error al registrar la ruta" + e));
+      } else if (
+        selectedRowKeys === undefined ||
+        selectedRowKeys.length === 0 ||
+        selectedRowKeys === null ||
+        Array.isArray(selectedRowKeys)
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Error al registrar un nuevo viaje...",
+          text: "Debes seleccionar al menos dos paradas antes de poder registrar un nuevo viaje",
+          fontFamily: "CircularSTD",
+        });
+      }
+    } else {
+      console.log(viajeData);
+      if (selectedRowKeys && selectedRowKeys.length >= 2) {
+        await saveRutaByIdRuta(viajeData.ruta.idRuta, selectedRowKeys)
+          .then(async (responseRegistroRuta) => {
+            if (responseRegistroRuta.data.error === false) {
+              await updateViajeById(
+                nuevoViajeData.fechaViaje,
+                nuevoViajeData.nombre,
+                responseRegistroRuta.data.object.idRuta,
+                nuevoViajeData.vehiculo,
+                nuevoViajeData.conductor,
+                viajeData.idViaje
+              ).then(async (responseUpdateViaje) => {
+                if (responseUpdateViaje.status === 201) {
+                  await Swal.fire({
+                    icon: "success",
+                    title: "Viaje actualizado exitosamente",
+                    showConfirmButton: true,
+                  }).then(() => {
+                    console.log(responseUpdateViaje);
+                    window.location.href = "/viajes";
+                  });
+                } else {
+                  await Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Hubo un error al actualizar el viaje, por favor inténtalo de nuevo",
+                  })
+                    .then(() => {
+                      console.log(responseUpdateViaje);
                       window.location.href = "/viajes";
                     });
-                  })
-                  .catch((e)=>{
-                    console.log(e);
-                    Swal.fire({
-                      icon: "error",
-                      title: "Error",
-                      text: "Hubo un error al procesar la solicitud. Por favor, inténtalo de nuevo.",
-                    });
-                  })
-            
-                  console.log("Viaje actualizado");
-              }
-            }).catch((e) => console.log("Error al registrar la ruta" + e));
+                }
+              })
+                .catch((e) => {
+                  console.log(e);
+                  Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Hubo un error al procesar la solicitud. Por favor, inténtalo de nuevo.",
+                  });
+                });
 
-        }else if (
-          selectedRowKeys === undefined ||
-          selectedRowKeys.length === 0 ||
-          selectedRowKeys === null ||
-          Array.isArray(selectedRowKeys)
-        ) {
-          Swal.fire({
-            icon: "error",
-            title: "Error al registrar un nuevo viaje...",
-            text: "Debes seleccionar al menos dos paradas antes de poder registrar un nuevo viaje",
-            fontFamily: "CircularSTD",
-          });
-        }
+              console.log("Viaje actualizado");
+            }
+          }).catch((e) => console.log("Error al registrar la ruta" + e));
 
-
+      } else if (
+        selectedRowKeys === undefined ||
+        selectedRowKeys.length === 0 ||
+        selectedRowKeys === null ||
+        Array.isArray(selectedRowKeys)
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Error al actualizar el viaje...",
+          text: "Debes seleccionar al menos dos paradas antes de poder actualizar el viaje",
+          fontFamily: "CircularSTD",
+        });
       }
-    } catch (error) {
-      console.error("Error al registrar o actualizar el viaje:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Hubo un error al procesar la solicitud. Por favor, inténtalo de nuevo.",
-      });
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    console.error("Error al registrar o actualizar el viaje:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Hubo un error al procesar la solicitud. Por favor, inténtalo de nuevo.",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
   
-
-
 
   const columns = [
     {

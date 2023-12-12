@@ -5,7 +5,11 @@ import Login from './screens/Login/Login';
 import Viajes from './screens/Viajes/Viajes';
 import ViajesRegisterAndEdit from './screens/Viajes/Subscreens/ViajesRegisterAndEdit';
 import ParadasRegisterAndEdit from './screens/Viajes/Subscreens/ParadasRegisterAndEdit';
-import UnidadesRegisterAndEdit from './screens/Unidades/Subscreens/UnidadesRegisterAndEdit';
+import UnidadesRegister from './screens/Unidades/Subscreens/UnidadesRegister';
+import UnidadesEdit from './screens/Unidades/Subscreens/UnidadesEdit';
+import ConductoresRegister from './screens/Conductores/Subscreens/ConductoresRegister';
+import ConductoresEditCard from './components/Cards/ConductoresEditCard';
+import ConductoresEdit from './screens/Conductores/Subscreens/ConductoresEdit';
 
 function App() {
   return (
@@ -14,8 +18,11 @@ function App() {
       <Route path="/viajesRegister" element={<ViajesRegisterAndEdit isNew={true} />} />
       <Route path="/viajesRegister/:idViaje" element={<ViajesRegisterAndEdit isNew={false} />} />
       <Route path="/paradasRegister" element={<ParadasRegisterAndEdit />} />
-      <Route path='/unidadesRegister' element={<UnidadesRegisterAndEdit/>}></Route>
+      <Route path='/unidadesRegister' element={<UnidadesRegister/>}></Route>
+      <Route path='/unidadesEdit' element={<UnidadesEdit/>}></Route>
       <Route path="/conductores" element={<Conductores />} />
+      <Route path='/conductoresRegister' element={<ConductoresRegister />}></Route>
+      <Route path='/conductoresEdit' element={<ConductoresEdit />}></Route>
       <Route path="/unidades" element={<Unidades />} />
       <Route path="/logout" element={<Login />} />
     </Routes>

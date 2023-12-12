@@ -3,14 +3,24 @@ import { Link } from "react-router-dom";
 import { Table, Button, Space, Image } from "antd";
 import {
   PlusOutlined,
-  EyeOutlined,
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
 import "./Table.css";
 import defaultimg from "../../assets/images/default.jpg"
+import { useNavigate } from 'react-router-dom';
 
 const ConductoresTable = () => {
+
+    /*THIS NAVIGATE IS A HARDCODE TO GO TO EDIT */
+  /* START NAVIGATE */
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/conductoresEdit');
+  };
+  /* END NAVIGATE */
+
   const columns = [
     {
         title: "",
@@ -53,7 +63,7 @@ const ConductoresTable = () => {
       dataIndex: "acciones",
       render: (text, record) => (
         <Space size="middle">
-          <Button icon={<EditOutlined />} />
+          <Button icon={<EditOutlined onClick={handleClick}/>} />
           <Button icon={<DeleteOutlined />} />
         </Space>
       ),
@@ -86,7 +96,7 @@ const ConductoresTable = () => {
 
   return (
     <div style={{ overflowX: "auto" }}>
-      <Link to="/unidadesRegister">
+      <Link to="/conductoresRegister">
         <Button
           type="primary"
           icon={<PlusOutlined style={{ fontWeight: "bold" }} />}

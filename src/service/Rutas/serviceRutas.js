@@ -71,6 +71,25 @@ export const saveRutaByIdRuta= async (id, paradasArray) => {
 };
 
 
+//Get ruta by id
+export const deleteRutaById = async (id) => {
+  try {
+    const response = await axios.delete(
+      createURL([`/ruta/${id}`]),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    );
+
+    return response;
+
+  } catch (error) {
+    return error;
+  }
+};
 
 
 

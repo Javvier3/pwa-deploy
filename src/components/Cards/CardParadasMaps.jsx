@@ -70,7 +70,7 @@ const CardParadasMaps = () => {
             .then((res) => {
               if (res.data.message === "Ok") {
                 Swal.fire("Registro realizado con éxito", "", "success").then(() => {
-                  window.location.href = "/viajesRegister";
+                  window.location.href = "/viajes";
                 });
               } else {
                 Swal.fire("No se pudo realizar el registro", "", "error");

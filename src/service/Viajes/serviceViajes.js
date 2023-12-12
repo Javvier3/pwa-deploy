@@ -109,6 +109,32 @@ export const getViajeById = async (id) => {
 };
 
 
+export const deleteViajeById = async (id) => {
+  try {
+    const response = await axios.delete(
+      createURL([`/viajes/${id}`]),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    );
+
+    return response;
+
+  } catch (error) {
+    return error;
+  }
+};
+
+
+
+
+
+
+
+
 
 
 

@@ -144,7 +144,7 @@ const CardParadasMaps = () => {
                     fontFamily: "CircularSTD",
                   }}
                 />
-                <Link to="/viajesRegister">
+                <Link to="/viajes">
                   <Button
                     type="primary"
                     style={{

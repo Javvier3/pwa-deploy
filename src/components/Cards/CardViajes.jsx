@@ -1,11 +1,35 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Card } from "antd";
 import { CalendarOutlined } from "@ant-design/icons";
 import "./CardStyle.css";
+import { getAllViajes } from "../../service/Viajes/serviceViajes";
 
 const { Meta } = Card;
 
+
+
 const CardViajes = () => {
+
+  const [viajesTotal, setViajesTotal] = useState(0);
+
+  const retrieveAllViajes = async () => {
+    try {
+      await getAllViajes()
+        .then((res)=>{
+          setViajesTotal(res.data.object.length)
+        })
+    } catch (error) {
+      // Lógica para manejar el error en caso de error en la solicitud
+      console.error("Error al intentar obtener los viajes:", error);
+    }
+  };
+  
+
+  useEffect(() => {
+    retrieveAllViajes()
+  }, [])
+  
+
   return (
     <>
       <Card style={{ marginTop: 12 }}>
@@ -36,7 +60,7 @@ const CardViajes = () => {
           }
           description={
             <span className="card-desc" style={{ color: "#232D42" }}>
-              100
+              {viajesTotal}
             </span>
           }
         />

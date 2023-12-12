@@ -1,11 +1,28 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Card } from "antd";
 import { CarOutlined } from "@ant-design/icons";
 import "./CardStyle.css";
+import { getAllVehiculos } from "../../service/unidades/serviceUnidades";
 
 const { Meta } = Card;
 
 const CardUnidades = () => {
+  const [unidadesTotal, setUnidadesTotal] = useState(0);
+
+  const retrieveAllConductores = async () => {
+    try {
+      const response = await getAllVehiculos()
+      setUnidadesTotal(response.data.object.length);
+    } catch (error) {
+      console.error("Error al intentar obtener los conductores:", error);
+    }
+  };
+
+  useEffect(() => {
+    retrieveAllConductores();
+  }, []);
+
+
   return (
     <>
       <Card style={{ marginTop: 12 }}>
@@ -35,7 +52,7 @@ const CardUnidades = () => {
           }
           description={<span className="card-desc"
           style={{ color: "#232D42"}}
-          >50</span>}
+          >{unidadesTotal}</span>}
         />
       </Card>
     </>

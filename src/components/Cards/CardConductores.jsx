@@ -1,11 +1,28 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Card } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import "./CardStyle.css";
+import { getAllConductores } from "../../service/conductores/serviceConductores";
 
 const { Meta } = Card;
 
 const CardConductores = () => {
+  const [conductoresTotal, setConductoresTotal] = useState(0);
+
+
+  const retrieveAllConductores = async () => {
+      try {
+        const response = await getAllConductores();
+        setConductoresTotal(response.data.object.length);
+      } catch (error) {
+        console.error("Error al intentar obtener los conductores:", error);
+      }
+    };
+
+    useEffect(() => {
+      retrieveAllConductores();
+    }, []);
+
   return (
     <>
       <Card style={{ marginTop: 12 }}>
@@ -36,7 +53,7 @@ const CardConductores = () => {
           }
           description={
             <span className="card-desc" style={{ color: "#232D42" }}>
-              27
+              {conductoresTotal}
             </span>
           }
         />

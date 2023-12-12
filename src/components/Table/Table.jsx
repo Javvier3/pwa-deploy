@@ -3,7 +3,8 @@ import { Link, useNavigate  } from "react-router-dom";
 import { Table, Button, Space } from "antd";
 import { PlusOutlined, EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./Table.css";
-import { getAllViajes } from "../../service/Viajes/serviceViajes";
+import { deleteViajeById, getAllViajes } from "../../service/Viajes/serviceViajes";
+import Swal from "sweetalert2";
 
 const CustomTable = ({viajesData, setViajesData}) => {
   const [loading, setLoading] = useState(true);
@@ -29,6 +30,46 @@ const CustomTable = ({viajesData, setViajesData}) => {
     navigate(`/viajesRegister/${idViaje}`);
   };
 
+  
+const handleOnDeleted = async (idViaje) => {
+  try {
+    const result = await Swal.fire({
+      title: "¿Estás seguro de eliminar el viaje?",
+      text: "¡No podrás revertir esta acción!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3B4276",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminarlo",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (result.isConfirmed) {
+      // Lógica para eliminar el viaje
+      await deleteViajeById(idViaje);
+      
+      // Swal de éxito
+      await Swal.fire({
+        title: "Eliminado",
+        text: "El viaje ha sido eliminado exitosamente.",
+        icon: "success",
+        showConfirmButton: true,
+      }).then(() => {
+        // Redirección después de eliminar
+        window.location.href = "/viajes";
+      });
+    }
+  } catch (error) {
+    console.error("Error al intentar eliminar el viaje:", error);
+    // Swal de error
+    Swal.fire({
+      title: "Error",
+      text: "Hubo un error al intentar eliminar el viaje. Por favor, inténtalo de nuevo.",
+      icon: "error",
+    });
+  }
+};
+
   const mappedData = viajesData.map((viaje) => ({
     key: viaje.idViaje.toString(),
     nombre: viaje.nombre,
@@ -41,7 +82,7 @@ const CustomTable = ({viajesData, setViajesData}) => {
       <Space size="middle">
         <Button icon={<EyeOutlined />} />
         <Button icon={<EditOutlined />} onClick={() => handleEditClick(viaje.idViaje)} />
-        <Button icon={<DeleteOutlined />} />
+        <Button icon={<DeleteOutlined />} onClick={()=>{handleOnDeleted(viaje.idViaje)}}/>
       </Space>
     ),
   }));

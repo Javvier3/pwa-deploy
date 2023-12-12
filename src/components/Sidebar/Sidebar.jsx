@@ -48,7 +48,7 @@ const Sidebar = ({ children }) => {
               onClick={() => setCollapsed(!collapsed)}
               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuOutlined />}
             />
-            <p className="srTitle">Hola, Lorem !</p>
+            <p className="srTitle">Hola, Admin !</p>
           </div>
         </Header>
 

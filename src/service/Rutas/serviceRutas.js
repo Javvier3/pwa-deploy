@@ -47,7 +47,7 @@ export const saveRuta= async (paradasArray) => {
   }
 };
 
-export const saveRutaByViaje= async (id, paradasArray) => {
+export const saveRutaByIdRuta= async (id, paradasArray) => {
   try {
     const response = await axios.post(
       createURL(['/ruta/']),

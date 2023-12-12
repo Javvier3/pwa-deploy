@@ -61,64 +61,7 @@ const CardViajesRegisterEdit = ({nuevoViajeData,selectedRowKeys, isNew, viajeDat
     fetchUnidades();
   }, []);
 
-  const handleViajeRegisterEdit = async () => {
-    try {
-      setLoading(true);
-  
-      if (isNew) {
-        if (selectedRowKeys && selectedRowKeys.length > 0) {
-          await saveRuta(selectedRowKeys)
-            .then(responseRegistroRuta=>{
-              return responseRegistroRuta
-            }).then(responseRegistroRuta=>{
-                if(responseRegistroRuta.error === false){
-                  insertNewViaje(
-                    nuevoViajeData.fechaViaje,
-                    nuevoViajeData.nombre,
-                    responseRegistroRuta.idRuta,
-                    nuevoViajeData.vehiculo,
-                    nuevoViajeData.conductor
-                  ).then(responseViaje=>{
-                    //Swal de success de viaje
-                    console.log(responseViaje)
-                    console.log('Nuevo viaje registrado');
-                  }).catch(error=>{
-                    //Swal de error de viaje
-                    console.log(error)
-                  })
-                }
-              }).catch(e=>console.log("Error al registrar la ruta" + e))
-        }else if (selectedRowKeys === undefined || selectedRowKeys.length === 0 || selectedRowKeys === null || Array.isArray(selectedRowKeys)){
-          Swal.fire({
-            icon: "error",
-            title: "Error al registrar",
-            text: "No puedes registrar una parada sin coordenadas, por favor, ingresa una ubicación válida.",
-          });
-        }
-      } else {
-        await updateViajeById(
-          nuevoViajeData.fechaViaje,
-          nuevoViajeData.nombre,
-          nuevoViajeData.ruta,
-          nuevoViajeData.vehiculo,
-          nuevoViajeData.conductor,
-          viajeData.idViaje
-        );
-  
-        console.log('Viaje actualizado');
-      }
-    } catch (error) {
-      console.error('Error al registrar o actualizar el viaje:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Hubo un error al procesar la solicitud. Por favor, inténtalo de nuevo.',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-  
+
 
   return (
     <>
@@ -182,7 +125,7 @@ const CardViajesRegisterEdit = ({nuevoViajeData,selectedRowKeys, isNew, viajeDat
                       setSelectedConductor(value)
                     }}
                   >
-                    <option value="Sin asignar">Sin asignar</option>
+                    <option value={0}>Sin asignar</option>
                     {conductores.map((conductor) => (
                       <option key={conductor.idConductor} value={conductor.idConductor}>
                         {conductor.usuario.nombre}
@@ -208,7 +151,7 @@ const CardViajesRegisterEdit = ({nuevoViajeData,selectedRowKeys, isNew, viajeDat
                       setSelectedUnidad(value)
                     }}
                   > 
-                    <option value="Sin asignar">Sin asignar</option>
+                    <option value={0}>Sin asignar</option>
                     {unidades.map((unidad) => (
                       <option key={unidad.idVehiculo} value={unidad.idVehiculo.toString()}>
                         {`${unidad.marca} ${unidad.modelo} (${unidad.alias})`}

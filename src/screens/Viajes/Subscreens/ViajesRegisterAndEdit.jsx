@@ -18,6 +18,7 @@ const ViajesRegisterAndEdit = ({ isNew }) => {
   const [paradasData, setParadasData] = useState([]);
   const [viajeData, setViajeData] = useState(null);
   const [fecha, setFecha] = useState("0000-00-00");
+  let [nuevoViajeData, setNuevoViajeData] = useState({})
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [nombreViaje, setNombreViaje] = useState("")
   const [selectedConductor, setSelectedConductor] = useState(viajeData ? viajeData.conductor.idConductor : "Sin asignar");
@@ -42,11 +43,10 @@ const ViajesRegisterAndEdit = ({ isNew }) => {
   }, [isNew, idViaje]);
 
 
-  const nuevoViajeData = {
+    nuevoViajeData = {
     "fechaViaje": dayjs(fecha).format("YYYY-MM-DD"),
     "nombre": nombreViaje,
     "num_asientos_disponibles": 0,
-    "ruta": 3,
     "vehiculo": selectedUnidad,
     "conductor": selectedConductor
   };
@@ -96,6 +96,7 @@ const ViajesRegisterAndEdit = ({ isNew }) => {
               isNew={isNew}
               idViaje={idViaje}
               nuevoViajeData={nuevoViajeData}
+              setNuevoViajeData={setNuevoViajeData}
               />
             </Col>
           </Row>

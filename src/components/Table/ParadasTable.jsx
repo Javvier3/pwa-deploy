@@ -7,18 +7,18 @@ import {
   PlusOutlined,
   ArrowLeftOutlined,
 } from "@ant-design/icons";
+import dayjs from "dayjs";
 import "./Table.css";
 import { getAllParadas } from "../../service/Paradas/serviceParadas";
-import { retrieveRutas } from "../../service/Rutas/serviceRutas";
+import { retrieveRutas, saveRuta, saveRutaByIdRuta } from "../../service/Rutas/serviceRutas";
+import Swal from "sweetalert2";
+import { insertNewViaje, updateViajeById } from "../../service/Viajes/serviceViajes";
 
 
-const ParadasTable = ({nuevoViajeData, paradasData, setParadasData, setViajeData, viajeData, selectedRowKeys, setSelectedRowKeys, isNew, idViaje}) => {
+const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadasData, setViajeData, viajeData, selectedRowKeys, setSelectedRowKeys, isNew, idViaje}) => {
 
   const [rutas, setRutas] = useState([]);
   const [loading, setLoading] = useState(false)
-
-  console.log(nuevoViajeData)
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,8 +43,6 @@ const ParadasTable = ({nuevoViajeData, paradasData, setParadasData, setViajeData
     fetchData();
   }, [isNew, idViaje, setSelectedRowKeys, viajeData]);
 
-
-
   useEffect(() => {
     const fetchParadasData= async () => {
       try {
@@ -58,8 +56,119 @@ const ParadasTable = ({nuevoViajeData, paradasData, setParadasData, setViajeData
     };
 
     fetchParadasData();
-  }, []);
+  }, [setParadasData]);
 
+
+ console.log(nuevoViajeData)
+
+  const handleViajeRegisterEdit = async () => {
+    try {
+      setLoading(true);
+  
+      if (isNew) {
+        if (selectedRowKeys && selectedRowKeys.length >= 2) {
+          await saveRuta(selectedRowKeys)
+            .then(async (responseRegistroRuta) => {
+              if (responseRegistroRuta.data.error === false) {
+                await insertNewViaje(
+                  nuevoViajeData.fechaViaje,
+                  nuevoViajeData.nombre,
+                  responseRegistroRuta.data.object.idRuta,
+                  nuevoViajeData.vehiculo,
+                  nuevoViajeData.conductor
+                ).then((responseViaje) => {
+                  // Swal de success de viaje
+                  Swal.fire({
+                    icon: "success",
+                    title: "Viaje añadido exitosamente",
+                    showConfirmButton: true,
+                  }).then(() => {
+                    console.log(responseViaje)
+                    window.location.href = "/viajes";
+                  });
+                }).catch((error) => {
+                  // Swal de error de viaje
+                  console.log(error);
+                });
+              }
+            }).catch((e) => console.log("Error al registrar la ruta" + e));
+        } else if (
+          selectedRowKeys === undefined ||
+          selectedRowKeys.length === 0 ||
+          selectedRowKeys === null ||
+          Array.isArray(selectedRowKeys)
+        ) {
+          Swal.fire({
+            icon: "error",
+            title: "Error al registrar un nuevo viaje...",
+            text: "Debes seleccionar al menos dos paradas antes de poder registrar un nuevo viaje",
+            fontFamily: "CircularSTD",
+          });
+        }
+      } else {
+        console.log(viajeData)
+        if (selectedRowKeys && selectedRowKeys.length >= 2) {
+          await saveRutaByIdRuta(viajeData.ruta.idRuta, selectedRowKeys)
+            .then(async (responseRegistroRuta) => {
+              if (responseRegistroRuta.data.error === false) {
+                  await updateViajeById(
+                    nuevoViajeData.fechaViaje,
+                    nuevoViajeData.nombre,
+                    nuevoViajeData.ruta,
+                    nuevoViajeData.vehiculo,
+                    nuevoViajeData.conductor,
+                    viajeData.idViaje
+                  ).then(async (responseUpdateViaje) => {
+                    await Swal.fire({
+                      icon: "success",
+                      title: "Viaje actualizado exitosamente",
+                      showConfirmButton: true,
+                    }).then(() => {
+                      console.log(responseUpdateViaje)
+                      window.location.href = "/viajes";
+                    });
+                  })
+                  .catch((e)=>{
+                    console.log(e);
+                    Swal.fire({
+                      icon: "error",
+                      title: "Error",
+                      text: "Hubo un error al procesar la solicitud. Por favor, inténtalo de nuevo.",
+                    });
+                  })
+            
+                  console.log("Viaje actualizado");
+              }
+            }).catch((e) => console.log("Error al registrar la ruta" + e));
+
+        }else if (
+          selectedRowKeys === undefined ||
+          selectedRowKeys.length === 0 ||
+          selectedRowKeys === null ||
+          Array.isArray(selectedRowKeys)
+        ) {
+          Swal.fire({
+            icon: "error",
+            title: "Error al registrar un nuevo viaje...",
+            text: "Debes seleccionar al menos dos paradas antes de poder registrar un nuevo viaje",
+            fontFamily: "CircularSTD",
+          });
+        }
+
+
+      }
+    } catch (error) {
+      console.error("Error al registrar o actualizar el viaje:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un error al procesar la solicitud. Por favor, inténtalo de nuevo.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
 
 
@@ -118,7 +227,6 @@ const ParadasTable = ({nuevoViajeData, paradasData, setParadasData, setViajeData
         />
       </Link>
 
-      <Link to="/">
         <Button
           type="primary"
           icon={<PlusOutlined style={{ fontWeight: "bold" }} />}
@@ -127,10 +235,11 @@ const ParadasTable = ({nuevoViajeData, paradasData, setParadasData, setViajeData
             fontFamily: "CircularSTD",
             background: "#FB1506",
           }}
+          onClick={handleViajeRegisterEdit}
         >
           {viajeData ? "Actualizar Viaje" : "Añadir Viaje"}
+          
         </Button>
-      </Link>
 
       <Table
         className="tbl-font"

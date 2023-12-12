@@ -25,12 +25,35 @@ export const retrieveRutas = async (id) => {
 
 
 //Create
-export const saveRuta= async (paradas) => {
+export const saveRuta= async (paradasArray) => {
   try {
     const response = await axios.post(
       createURL(['/ruta/']),
       {
-        "paradas": [],
+        "paradas": paradasArray,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    );
+
+    return response;
+
+  } catch (error) {
+    return error;
+  }
+};
+
+export const saveRutaByViaje= async (id, paradasArray) => {
+  try {
+    const response = await axios.post(
+      createURL(['/ruta/']),
+      {
+        "idRuta": id,
+        "paradas": paradasArray,
       },
       {
         headers: {

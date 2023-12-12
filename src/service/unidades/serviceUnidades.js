@@ -5,7 +5,6 @@ const accessToken = localStorage.getItem('token');
 
 
 export const getAllVehiculos= async () => {
-    console.log(accessToken)
   try {
     const response = await axios.get(
       createURL([`/vehiculo/`]),

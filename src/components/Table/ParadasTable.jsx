@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import { Table, Button, Space } from "antd";
 import {
   EditOutlined,
@@ -10,11 +10,15 @@ import {
 import "./Table.css";
 import { getAllParadas } from "../../service/Paradas/serviceParadas";
 import { retrieveRutas } from "../../service/Rutas/serviceRutas";
-import { getViajeById } from "../../service/Viajes/serviceViajes";
 
-const ParadasTable = ({ paradasData, setParadasData, setViajeData, viajeData, selectedRowKeys, setSelectedRowKeys, isNew, idViaje}) => {
+
+const ParadasTable = ({nuevoViajeData, paradasData, setParadasData, setViajeData, viajeData, selectedRowKeys, setSelectedRowKeys, isNew, idViaje}) => {
 
   const [rutas, setRutas] = useState([]);
+  const [loading, setLoading] = useState(false)
+
+  console.log(nuevoViajeData)
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,7 +44,6 @@ const ParadasTable = ({ paradasData, setParadasData, setViajeData, viajeData, se
   }, [isNew, idViaje, setSelectedRowKeys, viajeData]);
 
 
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchParadasData= async () => {
@@ -56,6 +59,9 @@ const ParadasTable = ({ paradasData, setParadasData, setViajeData, viajeData, se
 
     fetchParadasData();
   }, []);
+
+
+
 
   const columns = [
     {
@@ -134,7 +140,7 @@ const ParadasTable = ({ paradasData, setParadasData, setViajeData, viajeData, se
         onChange={onChange}
         pagination={{
           responsive: true,
-          pageSize: 5, // Muestra solo 4 elementos por página
+          pageSize: 4, 
         }}
         rowKey={(record) => record.idParada}
         rowSelection={rowSelection}
@@ -142,6 +148,8 @@ const ParadasTable = ({ paradasData, setParadasData, setViajeData, viajeData, se
           emptyText: <div style={{ textAlign: "center" }}>{noDataMessage}</div>,
         }}
       />
+
+
     </div>
   );
 };

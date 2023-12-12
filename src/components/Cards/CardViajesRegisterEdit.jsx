@@ -137,7 +137,7 @@ const CardViajesRegisterEdit = ({nuevoViajeData,selectedRowKeys, isNew, viajeDat
                       setSelectedConductor(value)
                     }}
                   >
-                    <option value={0}>Sin asignar</option>
+                    <option value={0} >Sin asignar</option>
                     {conductores.map((conductor) => (
                       <option key={conductor.idConductor} value={conductor.idConductor}>
                         {conductor.usuario.nombre}

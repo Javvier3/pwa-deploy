@@ -9,7 +9,7 @@ const { Meta } = Card;
 const CardUnidades = () => {
   const [unidadesTotal, setUnidadesTotal] = useState(0);
 
-  const retrieveAllConductores = async () => {
+  const retrieveAllUnidades = async () => {
     try {
       const response = await getAllVehiculos()
       setUnidadesTotal(response.data.object.length);
@@ -19,7 +19,7 @@ const CardUnidades = () => {
   };
 
   useEffect(() => {
-    retrieveAllConductores();
+    retrieveAllUnidades();
   }, []);
 
 

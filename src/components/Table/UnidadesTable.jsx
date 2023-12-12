@@ -1,39 +1,60 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Table, Button, Space } from "antd";
+import { Table, Button, Space, Empty } from "antd";
 import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
 import "./Table.css";
-import defaultimg from "../../assets/images/default.jpg"
-import { useNavigate } from 'react-router-dom';
-
-
+import defaultimg from "../../assets/images/default.jpg";
+import { useNavigate } from "react-router-dom";
+import { getAllVehiculos } from "../../service/unidades/serviceUnidades";
 
 const UnidadesTable = () => {
-
-  /*THIS NAVIGATE IS A HARDCODE TO GO TO EDIT */
-  /* START NAVIGATE */
+  const [unidadesData, setUnidadesData] = useState([]);
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate('/unidadesEdit');
+  useEffect(() => {
+    retrieveAllUnidades();
+  }, []);
+
+  const retrieveAllUnidades = async () => {
+    try {
+      const response = await getAllVehiculos();
+      setUnidadesData(response.data.object || []);
+    } catch (error) {
+      console.error("Error al intentar obtener los conductores:", error);
+    }
   };
-  /* END NAVIGATE */
+
+  const handleClick = () => {
+    navigate("/unidadesEdit");
+  };
+
+  const data = unidadesData.map((unidad) => ({
+    key: unidad.idVehiculo.toString(),
+    imgp: unidad.foto || defaultimg,
+    alias: unidad.alias,
+    type: unidad.tipo,
+    seats: unidad.numAsientos, // Cambiado de 'plate' a 'seats'
+    year: unidad.anio.toString(),
+    marca: unidad.marca,
+    model: unidad.modelo,
+  }));
+
   const columns = [
     {
-      title: "",
+      title: "Imagen",
       dataIndex: "imgp",
       render: (text, record) => (
-          <img
-            src={text}
-            alt={`Imagen de conductor`}
-            width={50}
-            style={{ borderRadius: "50%" }}
-          />
-        ),
+        <img
+          src={text}
+          alt={`Imagen de conductor`}
+          width={50}
+          style={{ borderRadius: "50%" }}
+        />
+      ),
       responsive: ["md", "lg", "xl"],
     },
     {
@@ -49,8 +70,8 @@ const UnidadesTable = () => {
       responsive: ["md", "lg", "xl"],
     },
     {
-      title: "Placa",
-      dataIndex: "plate",
+      title: "Número de Asientos", // Cambiado de 'Placa' a 'Número de Asientos'
+      dataIndex: "seats",
       responsive: ["md", "lg", "xl"],
     },
     {
@@ -63,14 +84,14 @@ const UnidadesTable = () => {
       title: "Marca",
       dataIndex: "marca",
       sorter: (a, b) => a.marca.localeCompare(b.marca),
-      responsive: ["md", "lg", "xl"],
+      responsive: ["xs","sm","md", "lg", "xl"],
     },
     {
-        title: "Modelo",
-        dataIndex: "model",
-        sorter: (a, b) => a.model.localeCompare(b.model),
-        responsive: ["md", "lg", "xl"],
-      },
+      title: "Modelo",
+      dataIndex: "model",
+      sorter: (a, b) => a.model.localeCompare(b.model),
+      responsive: ["xs","sm","md", "lg", "xl"],
+    },
     {
       title: "Acciones",
       dataIndex: "acciones",
@@ -84,28 +105,16 @@ const UnidadesTable = () => {
     },
   ];
 
-  const data = [
-    {
-      key: "1",
-      imgp: defaultimg,
-      alias: "VV-001",
-      type: "Automovil",
-      plate: "AB-123CD",
-      year: "2018",
-      marca: "Toyota",
-      model: "Corolla",
+  const components = {
+    body: {
+      wrapper: (props) =>
+        unidadesData.length === 0 ? (
+          <Empty description="No existen unidades registradas" />
+        ) : (
+          <tbody {...props} />
+        ),
     },
-    {
-      key: "2",
-      imgp: defaultimg,
-      alias: "VV-002",
-      type: "Van",
-      plate: "XYZ-987AB",
-      year: "2015",
-      marca: "Toyota",
-      model: "Corolla",
-    },
-  ];
+  };
 
   const onChange = (pagination, filters, sorter, extra) => {
     console.log("params", pagination, filters, sorter, extra);
@@ -133,8 +142,8 @@ const UnidadesTable = () => {
         dataSource={data}
         onChange={onChange}
         pagination={{ responsive: true }}
+        components={components}
       />
-      
     </div>
   );
 };

@@ -73,7 +73,54 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
       if (selectedRowKeys && selectedRowKeys.length >= 2) {
         await saveRuta(selectedRowKeys)
           .then(async (responseRegistroRuta) => {
-            if (responseRegistroRuta.data.error === false) {
+            if (!responseRegistroRuta.data.error) {
+              const conductorAssigned = nuevoViajeData.conductor !== null && nuevoViajeData.conductor !== undefined && nuevoViajeData.conductor !== 0 && nuevoViajeData.conductor !== "0" && nuevoViajeData.conductor !== "Sin asignar";
+              const vehiculoSelected = nuevoViajeData.vehiculo !== null && nuevoViajeData.vehiculo !== undefined && nuevoViajeData.vehiculo !== 0 && nuevoViajeData.vehiculo !== "0" && nuevoViajeData.vehiculo !== "Sin asignar";
+              const fechaViajeSelected = nuevoViajeData.fechaViaje !== null && nuevoViajeData.fechaViaje !== undefined && nuevoViajeData.fechaViaje !== "" && nuevoViajeData.fechaViaje !== "1899-11-30" && nuevoViajeData.fechaViaje !== "Invalid Date";
+
+              if (!conductorAssigned) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error al registrar un nuevo viaje...",
+                  text: "Debe seleccionar un conductor para registrar el viaje",
+                  fontFamily: "CircularSTD",
+                });
+                return; // Stop execution if conductor is not assigned
+              }
+
+              if (!vehiculoSelected) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error al registrar un nuevo viaje...",
+                  text: "Debe seleccionar un vehículo para registrar el viaje",
+                  fontFamily: "CircularSTD",
+                });
+                return; // Stop execution if vehiculo is not selected
+              }
+
+              if (!fechaViajeSelected) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error al registrar un nuevo viaje...",
+                  text: "La fecha seleccionada no es válida",
+                  fontFamily: "CircularSTD",
+                });
+                return; // Stop execution if fechaViaje is not valid
+              }
+
+              const selectedDate = new Date(nuevoViajeData.fechaViaje);
+              const currentDate = new Date();
+
+              if (selectedDate < currentDate) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error al registrar un nuevo viaje...",
+                  text: "Solo puedes ingresar fechas superiores al día actual",
+                  fontFamily: "CircularSTD",
+                });
+                return; // Stop execution if fechaViaje is earlier than the current date
+              }
+
               await insertNewViaje(
                 nuevoViajeData.fechaViaje,
                 nuevoViajeData.nombre,
@@ -81,7 +128,6 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
                 nuevoViajeData.vehiculo,
                 nuevoViajeData.conductor
               ).then((responseViaje) => {
-                // Swal de success de viaje
                 if (responseViaje.status === 201) {
                   Swal.fire({
                     icon: "success",
@@ -93,20 +139,27 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
                   });
                 }
               }).catch((error) => {
-                // Swal de error de viaje
                 console.log(error);
                 Swal.fire({
                   icon: "error",
-                  title: "Error",
+                  title: "Error al registrar el viaje",
                   text: "Hubo un error al registrar el viaje, por favor inténtalo de nuevo",
-                })
-                  .then(() => {
-                    window.location.href = "/viajes";
-                  });
-                
+                }).then(() => {
+                  window.location.href = "/viajes";
+                });
               });
             }
-          }).catch((e) => console.log("Error al registrar la ruta" + e));
+          }).catch((e) => {
+            console.log("Error al registrar la ruta" + e);
+            Swal.fire({
+              icon: "error",
+              title: "Error al registrar la ruta",
+              text: "Hubo un error al registrar la ruta, por favor inténtalo de nuevo",
+            }).then(() => {
+              window.location.href = "/viajes";
+            });
+          });
+
       } else if (
         selectedRowKeys === undefined ||
         selectedRowKeys.length === 0 ||
@@ -119,13 +172,60 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
           text: "Debes seleccionar al menos dos paradas antes de poder registrar un nuevo viaje",
           fontFamily: "CircularSTD",
         });
-      }
+      } 
     } else {
       console.log(viajeData);
       if (selectedRowKeys && selectedRowKeys.length >= 2) {
         await saveRutaByIdRuta(viajeData.ruta.idRuta, selectedRowKeys)
           .then(async (responseRegistroRuta) => {
-            if (responseRegistroRuta.data.error === false) {
+            if (!responseRegistroRuta.data.error) {
+              const conductorAssigned = nuevoViajeData.conductor !== null && nuevoViajeData.conductor !== undefined && nuevoViajeData.conductor !== 0 && nuevoViajeData.conductor !== "0" && nuevoViajeData.conductor !== "Sin asignar";
+              const vehiculoSelected = nuevoViajeData.vehiculo !== null && nuevoViajeData.vehiculo !== undefined && nuevoViajeData.vehiculo !== 0 && nuevoViajeData.vehiculo !== "0" && nuevoViajeData.vehiculo !== "Sin asignar";
+              const fechaViajeSelected = nuevoViajeData.fechaViaje !== null && nuevoViajeData.fechaViaje !== undefined && nuevoViajeData.fechaViaje !== "" && nuevoViajeData.fechaViaje !== "1899-11-30" && nuevoViajeData.fechaViaje !== "Invalid Date";
+
+              if (!conductorAssigned) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error al actualizar el viaje...",
+                  text: "Debe seleccionar un conductor para actualizar el viaje",
+                  fontFamily: "CircularSTD",
+                });
+                return; // Stop execution if conductor is not assigned
+              }
+
+              if (!vehiculoSelected) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error al actualizar el viaje...",
+                  text: "Debe seleccionar un vehículo para actualizar el viaje",
+                  fontFamily: "CircularSTD",
+                });
+                return; // Stop execution if vehiculo is not selected
+              }
+
+              if (!fechaViajeSelected) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error al actualizar el viaje...",
+                  text: "La fecha seleccionada no es válida",
+                  fontFamily: "CircularSTD",
+                });
+                return; // Stop execution if fechaViaje is not valid
+              }
+
+              const selectedDate = new Date(nuevoViajeData.fechaViaje);
+              const currentDate = new Date();
+
+              if (selectedDate <= currentDate) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error al actualizar el viaje...",
+                  text: "Solo puedes ingresar fechas superiores al día actual",
+                  fontFamily: "CircularSTD",
+                });
+                return; // Stop execution if fechaViaje is earlier than the current date
+              }
+
               await updateViajeById(
                 nuevoViajeData.fechaViaje,
                 nuevoViajeData.nombre,
@@ -146,27 +246,37 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
                 } else {
                   await Swal.fire({
                     icon: "error",
-                    title: "Error",
+                    title: "Error al actualizar el viaje",
                     text: "Hubo un error al actualizar el viaje, por favor inténtalo de nuevo",
-                  })
-                    .then(() => {
-                      console.log(responseUpdateViaje);
-                      window.location.href = "/viajes";
-                    });
+                  }).then(() => {
+                    console.log(responseUpdateViaje);
+                    window.location.href = "/viajes";
+                  });
                 }
               })
-                .catch((e) => {
-                  console.log(e);
-                  Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: "Hubo un error al procesar la solicitud. Por favor, inténtalo de nuevo.",
-                  });
+              .catch((e) => {
+                console.log(e);
+                Swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Hubo un error al procesar la solicitud. Por favor, inténtalo de nuevo.",
+                }).then(() => {
+                  window.location.href = "/viajes";
                 });
+              });
 
               console.log("Viaje actualizado");
             }
-          }).catch((e) => console.log("Error al registrar la ruta" + e));
+          }).catch((e) => {
+            console.log("Error al registrar la ruta" + e);
+            Swal.fire({
+              icon: "error",
+              title: "Error al actualizar la ruta",
+              text: "Hubo un error al actualizar la ruta, por favor inténtalo de nuevo",
+            }).then(() => {
+              window.location.href = "/viajes";
+            });
+          });
 
       } else if (
         selectedRowKeys === undefined ||
@@ -182,19 +292,20 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
         });
       }
     }
-
-
   } catch (error) {
     console.error("Error al registrar o actualizar el viaje:", error);
     Swal.fire({
       icon: "error",
       title: "Error",
       text: "Hubo un error al procesar la solicitud. Por favor, inténtalo de nuevo.",
+    }).then(() => {
+      window.location.href = "/viajes";
     });
   } finally {
     setLoading(false);
   }
 };
+
 
   
 

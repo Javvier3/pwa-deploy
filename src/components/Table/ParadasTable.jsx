@@ -182,6 +182,8 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
         });
       }
     }
+
+
   } catch (error) {
     console.error("Error al registrar o actualizar el viaje:", error);
     Swal.fire({

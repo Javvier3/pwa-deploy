@@ -8,6 +8,7 @@ import { getViajeById } from "../../../service/Viajes/serviceViajes";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import { Formik, Form } from "formik";
+import * as Yup from "yup";
 
 import locale from "antd/es/date-picker/locale/es_ES";
 import "dayjs/locale/es";
@@ -70,7 +71,27 @@ useEffect(() => {
   }
 
 
-
+    const validationSchema = Yup.object().shape({
+      nombreViaje: Yup.string()
+        .matches(/^[a-zA-Z\s]+$/, "Solo se permiten letras y espacios en el nombre del viaje")
+        .min(5, "El nombre del viaje debe tener al menos 5 caracteres")
+        .max(50, "El nombre del viaje es muy largo")
+        .required("El nombre del viaje es requerido"),
+    
+      conductor: Yup.number()
+        .min(1, "Selecciona un conductor")
+        .required("El conductor es requerido"),
+    
+      unidad: Yup.number()
+        .min(1, "Selecciona una unidad")
+        .required("La unidad es requerida"),
+    
+      fechaViaje: Yup.date()
+        .min(new Date(), "La fecha de viaje no puede ser en el pasado")
+        .required("La fecha de viaje es requerida"),
+    });
+  
+    
 
 
   return (
@@ -78,7 +99,9 @@ useEffect(() => {
     <AntdConfigProvider locale={locale}>
       <Sidebar>
         <Layout>
-          <Formik >
+          <Formik validationSchema={validationSchema}
+
+          >
             <Form>
               <Row gutter={60}>
                 <CardViajesRegisterEdit 

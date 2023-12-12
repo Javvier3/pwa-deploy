@@ -16,9 +16,7 @@ import { getAllVehiculos } from "../../service/unidades/serviceUnidades";
 import es from 'antd/locale/es_ES'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
-import { saveRuta } from "../../service/Rutas/serviceRutas";
-import Swal from "sweetalert2";
-import { insertNewViaje, updateViajeById } from "../../service/Viajes/serviceViajes";
+
 dayjs.locale('es')
 
 
@@ -37,7 +35,6 @@ const CardViajesRegisterEdit = ({nuevoViajeData,selectedRowKeys, isNew, viajeDat
 }) => {
   const [conductores, setConductores] = useState([]);
   const [unidades, setUnidades] = useState([]);
-  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     // Cargar datos de conductores y unidades al montar el componente
@@ -77,10 +74,11 @@ const CardViajesRegisterEdit = ({nuevoViajeData,selectedRowKeys, isNew, viajeDat
               </Row>
               <Row style={{ marginBottom: "18px" }}>
                 <FileTextOutlined style={{ fontSize: "24px", color: "#FB1506", marginBottom: "10px" }} />
+
                 <Meta title="Nombre del viaje" style={{ marginLeft: "10px" }} />
                 <Field
                   type="text"
-                  name="nombreParada"
+                  name="nombreViaje"
                   as={Input}
                   placeholder="Sin asignar"
                   style={{ marginTop: "5px", marginLeft: "8px" }}
@@ -90,6 +88,18 @@ const CardViajesRegisterEdit = ({nuevoViajeData,selectedRowKeys, isNew, viajeDat
                     setNombreViaje(event.target.value); // Usar event.target.value para obtener el valor del campo
                   }}
                 />
+
+                {/* <ErrorMessage
+                  name="nombreViaje"
+                  component="div"
+                  style={{
+                    color: "#FB1506",
+                    marginLeft: "8px",
+                    marginTop: "10px",
+                    fontFamily: "CircularSTD",
+                  }}
+                /> */}
+                
 
               </Row>
               <Row>

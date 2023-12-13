@@ -18,6 +18,7 @@ import '../../screens/Viajes/Viajes.css'
 import {
   getConductorById,
   saveOrUpdateConductor,
+  updateConductorById,
 } from '../../service/conductores/serviceConductores'
 import dayjs from 'dayjs'
 import es from 'dayjs/locale/es'
@@ -58,16 +59,6 @@ const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email('Por favor, introduce un correo electrónico válido')
     .required('El campo Correo Electrónico es requerido'),
-  password: Yup.string()
-    .min(8, 'La contraseña debe tener al menos 8 caracteres')
-    .matches(
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]+$/,
-      'La contraseña debe contener al menos una letra, un número y un carácter especial',
-    )
-    .required('El campo Contraseña es requerido'),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref('password'), null], 'Las contraseñas deben coincidir')
-    .required('El campo Repetir contraseña es requerido'),
 })
 
 const ConductoresRegisterCard = () => {
@@ -139,27 +130,28 @@ const ConductoresRegisterCard = () => {
       })
 
       if (result.isConfirmed) {
-        console.log(
-          values.name,
+        console.log(values.name,
           null,
           null,
           0,
           values.email,
-          values.password,
-          dayjs(values.bdayDate).format('YYYY-MM-DDTHH:mm:ss'),
-          parseInt(values.phone),
-        )
-
-        await saveOrUpdateConductor(
-          //nombre, rfc, foto, puntuacion, correo, clave, bday, phone
-          values.name,
-          null,
-          null,
-          0,
-          values.email,
-          values.password,
+          conductorData.usuario.clave,
           dayjs(values.bdayDate).format('YYYY-MM-DDTHH:mm:ss'),
           values.phone,
+          conductorData.idConductor,
+          conductorData.usuario.idUsuario)
+
+        await updateConductorById(
+          //nombre, rfc, foto, puntuacion, correo, clave, bday, phone, id, idUser
+          values.name,
+          null,
+          null,
+          0,
+          values.email,
+          conductorData.usuario.clave,
+          dayjs(values.bdayDate).format('YYYY-MM-DDTHH:mm:ss'),
+          values.phone,
+          conductorData.idConductor,
         )
           .then((res) => {
             if (res.data.message === 'Ok') {

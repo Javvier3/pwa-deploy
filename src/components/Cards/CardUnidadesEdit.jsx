@@ -77,7 +77,7 @@ const CardUnidadesEdit = () => {
   // Use default values or provide fallbacks for the properties to avoid potential errors
   const initialValues = {
     alias: vehiculoData.alias || '',
-    anio: dayjs().set('year', vehiculoData.anio).startOf('year'),
+    anio: dayjs().set('year', vehiculoData.anio).startOf('year') || dayjs(),
     tipo: vehiculoData.tipo,
     marca: vehiculoData.marca || '',
     modelo: vehiculoData.modelo || '',

@@ -41,16 +41,15 @@ export const getConductorById = async (id) => {
   }
 };
 
-export const updateConductorById = async (nombre, rfc, foto, puntuacion, correo, clave, bday,phone, id, idUser) => {
+export const updateConductorById = async (nombre, rfc, foto, puntuacion, correo, clave, bday,phone, id) => {
   try {
     const response = await axios.post(
       createURL(['/auth/conductor/']),
       {
         "idConductor": id,
-        "idConductorUser": idUser,
         "nombre": nombre,
         "rfc": rfc,
-        "fotoPerfil": null,
+        "fotoPerfil": foto,
         "puntuacion": puntuacion,
         "correo": correo,
         "clave": clave,

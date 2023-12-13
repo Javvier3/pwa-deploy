@@ -15,33 +15,34 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { Link } from "react-router-dom";
 import defaultimg from "../../assets/images/default.jpg"
 import '../../screens/Viajes/Viajes.css';
+import { saveVehiculo } from '../../service/unidades/serviceUnidades';
 
 const { Option } = Select;
 const { Meta } = Card;
 
 const validationSchema = Yup.object().shape({
-  ak: Yup.string()
-    .min(5, "El alias de la unidad debe contener al menos 5 caracteres")
+  alias: Yup.string()
+    .min(3, "El alias de la unidad debe contener al menos 3 caracteres")
     .max(12, "El alias de la unidad es muy grande")
     .matches(
       /^[a-zA-Z0-9]*$/,
       "El alias de la unidad solo puede contener letras y numeros"
     )
     .required("El campo Alias es requerido"),
-  year: Yup.date()
+  anio: Yup.date()
     .required("El campo Año es requerido"),
-  type: Yup.string()
+  tipo: Yup.string()
     .required("El campo Tipo es requerido"),
   marca: Yup.string()
-    .min(5, "La marca de la unidad debe contener al menos 5 letras")
+    .min(3, "La marca de la unidad debe contener al menos 3 letras")
     .max(16, "La marca de la unidad es muy grande")
     .matches(
       /^[a-zA-Z\s]+$/,
       "La marca de la unidad solo puede contener letras y espacios"
     )
     .required("El campo Marca es requerido"),
-  model: Yup.string()
-    .min(5, "El modelo de la unidad debe contener al menos 5 letras")
+  modelo: Yup.string()
+    .min(3, "El modelo de la unidad debe contener al menos 3 letras")
     .max(16, "El modelo de la unidad es muy grande")
     .matches(
       /^[a-zA-Z\s]+$/,
@@ -50,16 +51,14 @@ const validationSchema = Yup.object().shape({
     .required("El campo Modelo es requerido"),
 });
 
-const CardUnidadesRegisterEdit = () => {
-
-  const [markers, setMarkers] = useState([]);
+const CardUnidadesRegister = () => {
 
   const initialValues = {
-    ak: "",
-    year: "",
-    type: "",
+    alias: "",
+    anio: "",
+    tipo: "",
     marca: "",
-    model: "",
+    modelo: "",
   };
   const [image, setImage] = useState(null);
 
@@ -88,57 +87,51 @@ const CardUnidadesRegisterEdit = () => {
     return true;
   };
 
+
   const handleFormSubmit = async (values) => {
     try {
-      if (markers && markers.length > 0) {
-        const result = await Swal.fire({
-          title: "Seguro de que quieres registrar la unidad?",
-          showDenyButton: false,
-          showCancelButton: true,
-          confirmButtonText: "Registrar",
-          confirmButtonColor: "#7280FF",
-          denyButtonText: `Cancelar`,
-          cancelButtonText: "Cancelar",
-        });
+      
+      const result = await Swal.fire({
+        title: "Seguro de que quieres registrar la unidad?",
+        showDenyButton: false,
+        showCancelButton: true,
+        confirmButtonText: "Registrar",
+        confirmButtonColor: "#7280FF",
+        denyButtonText: `Cancelar`,
+        cancelButtonText: "Cancelar",
+      });
 
-        if (result.isConfirmed) {
-          /*
-          CONSUMO
+      if (result.isConfirmed) {
+        let numAsientos = values.tipo === "Automovil" ? 3 : 20;
 
-          await saveOrUpdateParada(
-            values.nombreParada,
-            values.descripcionParada,
-            markers[0].lat,
-            markers[0].lng
-          )
-            .then((res) => {
-              if (res.data.message === "Ok") {
-                Swal.fire("Registro realizado con éxito", "", "success").then(() => {
-                  window.location.href = "/viajesRegister";
-                });
-              } else {
-                Swal.fire("No se pudo realizar el registro", "", "error");
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-              Swal.fire("No se pudo realizar el registro", "", "error");
-            });
-          */
-        } else if (result.isDenied) {
-          Swal.fire("Cambios cancelados", "", "info");
+        const res = await saveVehiculo(
+          values.anio.year(),
+          values.marca,
+          values.modelo,
+          values.tipo,
+          numAsientos,
+          values.alias
+        );
+
+        console.log(res);
+
+        if (!res.data.error) {
+          Swal.fire("Registro realizado con éxito", "", "success").then(() => {
+            window.location.href = "/unidades";
+          });
+        } else {
+          Swal.fire("No se pudo realizar el registro", "", "error");
         }
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error al registrar",
-          text: "No se registró la unidad, por favor revisa los datos",
-        });
+      } else if (result.isDenied) {
+        Swal.fire("Cambios cancelados", "", "info");
       }
+        
     } catch (error) {
       console.error(error);
+      Swal.fire("No se pudo realizar el registro", "", "error");
     }
   };
+  
 
   return (
     <>
@@ -240,7 +233,7 @@ const CardUnidadesRegisterEdit = () => {
                           <Row>
                             <Field
                               type="text"
-                              name="ak"
+                              name="alias"
                               as={Input}
                               placeholder="Sin asignar"
                               prefix={<FontColorsOutlined style={{ color: 'red' }} />}
@@ -259,18 +252,17 @@ const CardUnidadesRegisterEdit = () => {
                           </Row>
                         }
                         description={
-                          <Row>
-                            <Field name="year">
-                              {({ field, form }) => (
-                                <DatePicker
-                                  {...field}
-                                  placeholder="Año"
-                                  style={{ width: '100%' }}
-                                  onChange={(date) => form.setFieldValue('year', date)}
-                                />
-                              )}
-                            </Field>
-                          </Row>
+                          <Field name="anio">
+                            {({ field, form }) => (
+                              <DatePicker
+                                picker='year'
+                                {...field}
+                                placeholder="Año"
+                                style={{ width: '100%' }}
+                                onChange={(value) => form.setFieldValue(field.name, value)}
+                              />
+                            )}
+                          </Field>
                         }
                       />
                     </Col>
@@ -286,14 +278,15 @@ const CardUnidadesRegisterEdit = () => {
                         }
                         description={
                           <Row>
-                            <Field name="type">
+                            <Field name="tipo">
                               {({ field, form }) => (
                                 <Select
-                                  {...field}
-                                  placeholder="Tipo"
+                                  placeholder="Sin asignar"
                                   style={{ width: '100%' }}
-                                  onSelect={(value) => form.setFieldValue('type', value)}
+                                  onSelect={(value) => form.setFieldValue('tipo', value)}
+
                                 >
+                                   
                                   <Option value="Automovil">Automóvil</Option>
                                   <Option value="Van">Van</Option>
                                 </Select>
@@ -338,7 +331,7 @@ const CardUnidadesRegisterEdit = () => {
                           <Row>
                             <Field
                               type="text"
-                              name="model"
+                              name="modelo"
                               as={Input}
                               placeholder="Sin asignar"
                               prefix={<CarOutlined style={{ color: 'red' }} />}
@@ -408,4 +401,4 @@ const CardUnidadesRegisterEdit = () => {
   );
 };
 
-export default CardUnidadesRegisterEdit;
+export default CardUnidadesRegister;

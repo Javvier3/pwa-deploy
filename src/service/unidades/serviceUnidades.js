@@ -22,3 +22,54 @@ export const getAllVehiculos= async () => {
     return error;
   }
 };
+
+
+//Create
+export const saveVehiculo= async (anio,marca,modelo,carro,num_asientos,alias) => {
+  try {
+    const response = await axios.post(
+      createURL(['/vehiculo/']),
+      {
+        "anio": anio,
+        "marca": marca,
+        "modelo": modelo,
+        "tipo": carro,
+        "numAsientos": num_asientos,
+        "alias": alias
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      }
+    }
+    );
+
+    return response;
+
+  } catch (error) {
+    return error;
+  }
+};
+
+
+
+// borrar vehiculo 
+export const deleteVehiculoById= async (id) => {
+  try {
+    const response = await axios.delete(
+      createURL([`/vehiculo/${id}`]),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    );
+
+    return response;
+
+  } catch (error) {
+    return error;
+  }
+};

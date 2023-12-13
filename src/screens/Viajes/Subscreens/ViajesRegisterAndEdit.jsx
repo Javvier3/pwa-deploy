@@ -9,7 +9,6 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-
 import locale from "antd/es/date-picker/locale/es_ES";
 import "dayjs/locale/es";
 

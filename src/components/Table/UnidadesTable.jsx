@@ -9,7 +9,8 @@ import {
 import "./Table.css";
 import defaultimg from "../../assets/images/default.jpg";
 import { useNavigate } from "react-router-dom";
-import { getAllVehiculos } from "../../service/unidades/serviceUnidades";
+import { deleteVehiculoById, getAllVehiculos } from "../../service/unidades/serviceUnidades";
+import Swal from "sweetalert2";
 
 const UnidadesTable = () => {
   const [unidadesData, setUnidadesData] = useState([]);
@@ -28,50 +29,76 @@ const UnidadesTable = () => {
     }
   };
 
-  const handleClick = () => {
+  const handleClick = (id) => {
     navigate("/unidadesEdit");
   };
+
+  const handleDeleteUnidad = async (id) => {
+    try {
+      const result = await Swal.fire({
+        title: "¿Estás seguro de que quieres eliminar esta unidad?",
+        showDenyButton: true,
+        confirmButtonText: "Sí, eliminar",
+        denyButtonText: "Cancelar",
+      });
+  
+      if (result.isConfirmed) {
+        await deleteVehiculoById(id)
+          .then((response) => {
+            console.log(response)
+            if (response.data.error === false) {
+              Swal.fire("Eliminación exitosa", "", "success")
+                .then(()=>{ window.location.href = "/unidades";})
+            } else {
+              Swal.fire("Error al eliminar la unidad", response.data.message || "", "error")
+              .then(()=>{ window.location.href = "/unidades";})
+            }
+          })
+          .catch((error) => {
+            console.error("Error al eliminar la unidad:", error);
+            Swal.fire("Error al eliminar la unidad", "", "error")
+            .then(()=>{ window.location.href = "/unidades";})
+          });
+      } else if (result.isDenied) {
+        Swal.fire("Eliminación cancelada", "", "info");
+      }
+    } catch (error) {
+      console.error("Error al procesar la eliminación:", error);
+      Swal.fire("Error al procesar la eliminación", "", "error")
+      .then(()=>{ window.location.href = "/unidades";})
+    }
+  };
+  
+  
 
   const data = unidadesData.map((unidad) => ({
     key: unidad.idVehiculo.toString(),
     imgp: unidad.foto || defaultimg,
-    alias: unidad.alias,
-    type: unidad.tipo,
-    seats: unidad.numAsientos, // Cambiado de 'plate' a 'seats'
-    year: unidad.anio.toString(),
     marca: unidad.marca,
     model: unidad.modelo,
+    alias: unidad.alias,
+    year: unidad.anio.toString(),
+    type: unidad.tipo,
+    seats: unidad.numAsientos,
   }));
 
   const columns = [
     {
-      title: "Imagen",
-      dataIndex: "imgp",
-      render: (text, record) => (
-        <img
-          src={text}
-          alt={`Imagen de conductor`}
-          width={50}
-          style={{ borderRadius: "50%" }}
-        />
-      ),
-      responsive: ["md", "lg", "xl"],
+      title: "Marca",
+      dataIndex: "marca",
+      sorter: (a, b) => a.marca.localeCompare(b.marca),
+      responsive: ["xs", "sm", "md", "lg", "xl"],
+    },
+    {
+      title: "Modelo",
+      dataIndex: "model",
+      sorter: (a, b) => a.model.localeCompare(b.model),
+      responsive: ["xs", "sm", "md", "lg", "xl"],
     },
     {
       title: "Alias",
       dataIndex: "alias",
       sorter: (a, b) => a.alias.localeCompare(b.alias),
-      responsive: ["md", "lg", "xl"],
-    },
-    {
-      title: "Tipo",
-      dataIndex: "type",
-      sorter: (a, b) => a.type.localeCompare(b.type),
-      responsive: ["md", "lg", "xl"],
-    },
-    {
-      title: "Número de Asientos", // Cambiado de 'Placa' a 'Número de Asientos'
-      dataIndex: "seats",
       responsive: ["md", "lg", "xl"],
     },
     {
@@ -81,16 +108,15 @@ const UnidadesTable = () => {
       responsive: ["md", "lg", "xl"],
     },
     {
-      title: "Marca",
-      dataIndex: "marca",
-      sorter: (a, b) => a.marca.localeCompare(b.marca),
-      responsive: ["xs","sm","md", "lg", "xl"],
+      title: "Tipo",
+      dataIndex: "type",
+      sorter: (a, b) => a.type.localeCompare(b.type),
+      responsive: ["md", "lg", "xl"],
     },
     {
-      title: "Modelo",
-      dataIndex: "model",
-      sorter: (a, b) => a.model.localeCompare(b.model),
-      responsive: ["xs","sm","md", "lg", "xl"],
+      title: "Número de Asientos",
+      dataIndex: "seats",
+      responsive: ["md", "lg", "xl"],
     },
     {
       title: "Acciones",
@@ -98,7 +124,7 @@ const UnidadesTable = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button icon={<EditOutlined />} onClick={handleClick} />
-          <Button icon={<DeleteOutlined />} />
+          <Button icon={<DeleteOutlined/>} onClick={()=>{handleDeleteUnidad(record.key)}} />
         </Space>
       ),
       responsive: ["xs", "sm", "md"],
@@ -108,11 +134,7 @@ const UnidadesTable = () => {
   const components = {
     body: {
       wrapper: (props) =>
-        unidadesData.length === 0 ? (
-          <Empty description="No existen unidades registradas" />
-        ) : (
           <tbody {...props} />
-        ),
     },
   };
 
@@ -141,8 +163,11 @@ const UnidadesTable = () => {
         columns={columns}
         dataSource={data}
         onChange={onChange}
-        pagination={{ responsive: true }}
+        pagination={{ responsive: true, pageSize:4 }}
         components={components}
+        locale={{
+          emptyText: <div style={{ textAlign: "center" }}>No existen unidades disponibles</div>,
+        }}
       />
     </div>
   );

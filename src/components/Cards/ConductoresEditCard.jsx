@@ -71,33 +71,30 @@ const validationSchema = Yup.object().shape({
 })
 
 const ConductoresRegisterCard = () => {
-    const [conductorData, setConductorData] = useState({});
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await getConductorById(localStorage.getItem("idDriver"));
-          setConductorData(response.data.object);
-          console.log(response.data.object)
-        } catch (error) {
-          // Handle error here
-          console.error('Error fetching data:', error);
-        }
-      };
-  
-      fetchData();
-    }, []);
-  
-    // Use default values or provide fallbacks for the properties to avoid potential errors
-    const initialValues = {
-      name:conductorData.usuario.nombre,
-      bdayDate:dayjs(conductorData.usuario.fechaNacimiento),
-      phone:conductorData.usuario.numeroTelefono,
-      email:conductorData.usuario.correo
+  const [conductorData, setConductorData] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getConductorById(localStorage.getItem("idDriver"));
+        setConductorData(response.data.object);
+        console.log(response.data.object);
+      } catch (error) {
+        // Handle error here
+        console.error('Error fetching data:', error);
+      }
     };
   
-    //console.log(vehiculoData)
+    fetchData();
+  }, []);
   
+  // Verifica que conductorData y conductorData.usuario estén definidos antes de acceder a las propiedades
+  const initialValues = {
+    name: conductorData.usuario ? conductorData.usuario.nombre : '',
+    bdayDate: conductorData.usuario ? dayjs(conductorData.usuario.fechaNacimiento) : dayjs(),
+    phone: conductorData.usuario ? conductorData.usuario.numeroTelefono : '',
+    email: conductorData.usuario ? conductorData.usuario.correo : ''
+  };
     
 
   const [markers, setMarkers] = useState([])

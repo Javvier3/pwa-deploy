@@ -71,34 +71,34 @@ const validationSchema = Yup.object().shape({
 })
 
 const ConductoresRegisterCard = () => {
-  const [conductorData, setConductorData] = useState({})
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await getConductorById(
-          localStorage.getItem('idDriver'),
-        ).then(response=>{
-          console.log(conductorData)
-          return setConductorData(response.data.object)
+    const [conductorData, setConductorData] = useState({});
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await getConductorById(localStorage.getItem("idDriver"));
+          setConductorData(response.data.object);
+          console.log(response.data.object)
+        } catch (error) {
+          // Handle error here
+          console.error('Error fetching data:', error);
         }
-        )
-
-      } catch (error) {
-        // Handle error here
-        console.error('Error fetching data:', error)
-      }
-    }
-
-    fetchData()
-  }, [])
-
-  const initialValues = {
-    name: conductorData.nombre,
-    //bdayDate: dayjs(conductorData.usuario.fechaNacimiento).format(),
-    phone: conductorData.numeroTelefono,
-    email: conductorData.correo,
-  }
+      };
+  
+      fetchData();
+    }, []);
+  
+    // Use default values or provide fallbacks for the properties to avoid potential errors
+    const initialValues = {
+      name:conductorData.usuario.nombre,
+      bdayDate:dayjs(conductorData.usuario.fechaNacimiento),
+      phone:conductorData.usuario.numeroTelefono,
+      email:conductorData.usuario.correo
+    };
+  
+    //console.log(vehiculoData)
+  
+    
 
   const [markers, setMarkers] = useState([])
 

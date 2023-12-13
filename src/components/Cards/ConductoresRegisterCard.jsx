@@ -15,6 +15,8 @@ import { Formik, Field, Form } from 'formik';
 import { Link } from "react-router-dom";
 import defaultimg from "../../assets/images/default.jpg"
 import '../../screens/Viajes/Viajes.css';
+import { saveOrUpdateConductor } from '../../service/conductores/serviceConductores';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 const { Meta } = Card;
@@ -108,7 +110,6 @@ const ConductoresRegisterCard = () => {
 
   const handleFormSubmit = async (values) => {
     try {
-      if (markers && markers.length > 0) {
         const result = await Swal.fire({
           title: "Seguro de que quieres registrar el conductor?",
           showDenyButton: false,
@@ -120,19 +121,31 @@ const ConductoresRegisterCard = () => {
         });
 
         if (result.isConfirmed) {
-          /*
-          CONSUMO
+          console.log(            values.name,
+            null,
+            null,
+            0,
+            values.email,
+            values.password,
+            dayjs(values.bdayDate).format('YYYY-MM-DDTHH:mm:ss'),
+            parseInt(values.phone))
 
-          await saveOrUpdateParada(
-            values.nombreParada,
-            values.descripcionParada,
-            markers[0].lat,
-            markers[0].lng
+          await saveOrUpdateConductor(
+
+            //nombre, rfc, foto, puntuacion, correo, clave, bday, phone
+            values.name,
+            null,
+            null,
+            0,
+            values.email,
+            values.password,
+            dayjs(values.bdayDate).format('YYYY-MM-DDTHH:mm:ss'),
+            values.phone
           )
             .then((res) => {
               if (res.data.message === "Ok") {
                 Swal.fire("Registro realizado con éxito", "", "success").then(() => {
-                  window.location.href = "/viajesRegister";
+                  window.location.href = "/conductoresRegister";
                 });
               } else {
                 Swal.fire("No se pudo realizar el registro", "", "error");
@@ -142,17 +155,9 @@ const ConductoresRegisterCard = () => {
               console.error(error);
               Swal.fire("No se pudo realizar el registro", "", "error");
             });
-          */
         } else if (result.isDenied) {
           Swal.fire("Cambios cancelados", "", "info");
         }
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error al registrar",
-          text: "No puedes registrar al conductor, por favor, verifica los datos ingresados.",
-        });
-      }
     } catch (error) {
       console.error(error);
     }

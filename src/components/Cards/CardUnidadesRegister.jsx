@@ -102,7 +102,7 @@ const CardUnidadesRegister = () => {
       });
 
       if (result.isConfirmed) {
-        let numAsientos = values.tipo === "Automovil" ? 3 : 20;
+        let numAsientos = values.tipo === "Automovil" ? 4 : 20;
 
         const res = await saveVehiculo(
           values.anio.year(),
@@ -287,8 +287,8 @@ const CardUnidadesRegister = () => {
 
                                 >
                                    
-                                  <Option value="Automovil">Automóvil</Option>
-                                  <Option value="Van">Van</Option>
+                                  <Option value="Carro">Carro</Option>
+                                  <Option value="Camioneta">Camioneta</Option>
                                 </Select>
                               )}
                             </Field>

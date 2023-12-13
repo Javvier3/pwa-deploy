@@ -128,7 +128,7 @@ const CardUnidadesEdit = () => {
       });
 
       if (result.isConfirmed) {
-        let numAsientos = values.tipo === "Automovil" ? 3 : 20;
+        let numAsientos = values.tipo === "Carro" ? 4 : 20;
 
         console.log(localStorage.getItem('idUnidad'))
         const res = await updateVehiculo(
@@ -316,8 +316,8 @@ const CardUnidadesEdit = () => {
                                   onSelect={(value) => form.setFieldValue('tipo', value)}
 
                                 >
-                                  <Option value="Automovil">Automóvil</Option>
-                                  <Option value="Van" >Van</Option>
+                                  <Option value="Carro">Carro</Option>
+                                  <Option value="Camioneta">Camioneta</Option>
                                 </Select>
                               )}
                             </Field>

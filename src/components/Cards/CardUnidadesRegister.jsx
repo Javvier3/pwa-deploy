@@ -102,7 +102,7 @@ const CardUnidadesRegister = () => {
       });
 
       if (result.isConfirmed) {
-        let numAsientos = values.tipo === "Automovil" ? 4 : 20;
+        let numAsientos = values.tipo === "Carro" ? 4 : 20;
 
         const res = await saveVehiculo(
           values.anio.year(),

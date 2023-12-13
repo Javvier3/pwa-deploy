@@ -21,3 +21,15 @@
   color: rgba(0, 0, 0, 0.7);
 }
 
+.logo-animation {
+  animation: slideInRight 1.5s ease-out;
+}
+
+@keyframes slideInRight {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

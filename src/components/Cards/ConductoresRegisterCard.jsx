@@ -121,15 +121,6 @@ const ConductoresRegisterCard = () => {
         });
 
         if (result.isConfirmed) {
-          console.log(            values.name,
-            null,
-            null,
-            0,
-            values.email,
-            values.password,
-            dayjs(values.bdayDate).format('YYYY-MM-DDTHH:mm:ss'),
-            parseInt(values.phone))
-
           await saveOrUpdateConductor(
 
             //nombre, rfc, foto, puntuacion, correo, clave, bday, phone

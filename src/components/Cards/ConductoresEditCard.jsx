@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Card, Select, DatePicker, Col, Row, Input, Upload, Button } from 'antd';
+import React, { useState, useEffect } from 'react'
+import { Card, Select, DatePicker, Col, Row, Input, Upload, Button } from 'antd'
 import {
   NumberOutlined,
   FontColorsOutlined,
@@ -7,169 +7,199 @@ import {
   EditOutlined,
   MailOutlined,
   EyeOutlined,
-  EyeInvisibleOutlined
-} from '@ant-design/icons';
-import * as Yup from "yup";
-import Swal from "sweetalert2";
-import { Formik, Field, Form } from 'formik';
-import { Link } from "react-router-dom";
-import defaultimg from "../../assets/images/default.jpg"
-import '../../screens/Viajes/Viajes.css';
-import { saveOrUpdateConductor } from '../../service/conductores/serviceConductores';
+  EyeInvisibleOutlined,
+} from '@ant-design/icons'
+import * as Yup from 'yup'
+import Swal from 'sweetalert2'
+import { Formik, Field, Form } from 'formik'
+import { Link } from 'react-router-dom'
+import defaultimg from '../../assets/images/default.jpg'
+import '../../screens/Viajes/Viajes.css'
+import {
+  getConductorById,
+  saveOrUpdateConductor,
+} from '../../service/conductores/serviceConductores'
+import dayjs from 'dayjs'
+import es from 'dayjs/locale/es'
 
-const { Option } = Select;
-const { Meta } = Card;
+const { Option } = Select
+const { Meta } = Card
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
-    .matches(
-      /^[A-Za-z\s]+$/,
-      "El nombre solo puede contener letras"
-    )
-    .required("El campo Nombre es requerido"),
+    .matches(/^[A-Za-z\s]+$/, 'El nombre solo puede contener letras')
+    .required('El campo Nombre es requerido'),
   bdayDate: Yup.date()
-    .required("La fecha de cumpleaños es requerida")
+    .required('La fecha de cumpleaños es requerida')
     .test(
       'valid-age',
       'El conductor debe tener entre 18 y 55 años',
       (value) => {
         if (value) {
-          const selectedDate = new Date(value);
-          const today = new Date();
+          const selectedDate = new Date(value)
+          const today = new Date()
 
-          const ageDifference = today.getFullYear() - selectedDate.getFullYear();
-          selectedDate.setFullYear(today.getFullYear());
-          return ageDifference >= 18 && ageDifference < 55;
+          const ageDifference = today.getFullYear() - selectedDate.getFullYear()
+          selectedDate.setFullYear(today.getFullYear())
+          return ageDifference >= 18 && ageDifference < 55
         }
-        return true;
-      }
+        return true
+      },
     )
-    .required("El campo Fecha de nacimiento es requerido"),
+    .required('El campo Fecha de nacimiento es requerido'),
   phone: Yup.string()
     .matches(
       /^[0-9]*[1-9][0-9]*(?:\s*[0-9]*[1-9][0-9]*)*$/,
-      "El telefono solo debe estar compuesto por numeros"
+      'El telefono solo debe estar compuesto por numeros',
     )
-    .min(10, "El numero telefonico debe contener al menos 10 caracteres")
-    .max(15, "El numero telefonico debe contener maximo 15 caracteres")
-    .required("El campo Telefono es requerido"),
+    .min(10, 'El numero telefonico debe contener al menos 10 caracteres')
+    .max(15, 'El numero telefonico debe contener maximo 15 caracteres')
+    .required('El campo Telefono es requerido'),
   email: Yup.string()
-    .email("Por favor, introduce un correo electrónico válido")
-    .required("El campo Correo Electrónico es requerido"),
+    .email('Por favor, introduce un correo electrónico válido')
+    .required('El campo Correo Electrónico es requerido'),
   password: Yup.string()
     .min(8, 'La contraseña debe tener al menos 8 caracteres')
     .matches(
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]+$/,
-      'La contraseña debe contener al menos una letra, un número y un carácter especial'
+      'La contraseña debe contener al menos una letra, un número y un carácter especial',
     )
     .required('El campo Contraseña es requerido'),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password'), null], 'Las contraseñas deben coincidir')
     .required('El campo Repetir contraseña es requerido'),
-});
+})
 
-const ConductoresEditCard = () => {
+const ConductoresRegisterCard = () => {
+  const [conductorData, setConductorData] = useState({})
 
-  const [markers, setMarkers] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await getConductorById(
+          localStorage.getItem('idDriver'),
+        ).then(response=>{
+          console.log(conductorData)
+          return setConductorData(response.data.object)
+        }
+        )
+
+      } catch (error) {
+        // Handle error here
+        console.error('Error fetching data:', error)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   const initialValues = {
-    name: "",
-    bdayDate: "",
-    phone: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  };
-  const [image, setImage] = useState(null);
+    name: conductorData.nombre,
+    //bdayDate: dayjs(conductorData.usuario.fechaNacimiento).format(),
+    phone: conductorData.numeroTelefono,
+    email: conductorData.correo,
+  }
+
+  const [markers, setMarkers] = useState([])
+
+  const [image, setImage] = useState(null)
 
   const handleImageChange = (info) => {
     if (info.file.status === 'done') {
-      const imageUrl = URL.createObjectURL(info.file.originFileObj);
-      setImage(imageUrl);
+      const imageUrl = URL.createObjectURL(info.file.originFileObj)
+      setImage(imageUrl)
     }
-  };
+  }
 
   const handleRemoveImage = () => {
-    setImage(null);
-  };
+    setImage(null)
+  }
 
   const dummyRequest = ({ onSuccess }) => {
     setTimeout(() => {
-      onSuccess('ok');
-    }, 0);
-  };
+      onSuccess('ok')
+    }, 0)
+  }
 
   const beforeUpload = (file) => {
     // Permite solo un archivo
     if (image) {
-      return false;
+      return false
     }
-    return true;
-  };
+    return true
+  }
 
   const handleFormSubmit = async (values) => {
     try {
-      if (markers && markers.length > 0) {
-        const result = await Swal.fire({
-          title: "Seguro de que quieres registrar el conductor?",
-          showDenyButton: false,
-          showCancelButton: true,
-          confirmButtonText: "Registrar",
-          confirmButtonColor: "#7280FF",
-          denyButtonText: `Cancelar`,
-          cancelButtonText: "Cancelar",
-        });
+      const result = await Swal.fire({
+        title: 'Seguro de que quieres registrar el conductor?',
+        showDenyButton: false,
+        showCancelButton: true,
+        confirmButtonText: 'Registrar',
+        confirmButtonColor: '#7280FF',
+        denyButtonText: `Cancelar`,
+        cancelButtonText: 'Cancelar',
+      })
 
-        if (result.isConfirmed) {
-          /*
-          CONSUMO
+      if (result.isConfirmed) {
+        console.log(
+          values.name,
+          null,
+          null,
+          0,
+          values.email,
+          values.password,
+          dayjs(values.bdayDate).format('YYYY-MM-DDTHH:mm:ss'),
+          parseInt(values.phone),
+        )
 
-          await saveOrUpdateParada(
-            values.nombreParada,
-            values.descripcionParada,
-            markers[0].lat,
-            markers[0].lng
-          )
-            .then((res) => {
-              if (res.data.message === "Ok") {
-                Swal.fire("Registro realizado con éxito", "", "success").then(() => {
-                  window.location.href = "/viajesRegister";
-                });
-              } else {
-                Swal.fire("No se pudo realizar el registro", "", "error");
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-              Swal.fire("No se pudo realizar el registro", "", "error");
-            });
-          */
-        } else if (result.isDenied) {
-          Swal.fire("Cambios cancelados", "", "info");
-        }
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error al registrar",
-          text: "No puedes registrar al conductor, por favor, verifica los datos ingresados.",
-        });
+        await saveOrUpdateConductor(
+          //nombre, rfc, foto, puntuacion, correo, clave, bday, phone
+          values.name,
+          null,
+          null,
+          0,
+          values.email,
+          values.password,
+          dayjs(values.bdayDate).format('YYYY-MM-DDTHH:mm:ss'),
+          values.phone,
+        )
+          .then((res) => {
+            if (res.data.message === 'Ok') {
+              Swal.fire('Registro realizado con éxito', '', 'success').then(
+                () => {
+                  window.location.href = '/conductores'
+                },
+              )
+            } else {
+              Swal.fire('No se pudo realizar el registro', '', 'error')
+            }
+          })
+          .catch((error) => {
+            console.error(error)
+            Swal.fire('No se pudo realizar el registro', '', 'error')
+          })
+      } else if (result.isDenied) {
+        Swal.fire('Cambios cancelados', '', 'info')
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   return (
     <>
       <Card
         className="cardsita"
         title="Editar informacion del conductor"
-        style={{ height: "100%" }}
+        style={{ height: '100%' }}
       >
-
-        <Row style={{ marginBottom: "18px", justifyContent: "center" }} gutter={[16, 16]}>
+        <Row
+          style={{ marginBottom: '18px', justifyContent: 'center' }}
+          gutter={[16, 16]}
+        >
           <Col xs={24} sm={12} md={8} lg={8} xl={6}>
-          <Meta
+            <Meta
               title="Imagen"
               description={
                 <div style={{ textAlign: 'center', marginBottom: '8px' }}>
@@ -224,13 +254,16 @@ const ConductoresEditCard = () => {
                     ]}
                     style={{ marginTop: '8px' }}
                   >
-                    <Button icon={<PictureOutlined />} style={{ width: '100%' }}>
+                    <Button
+                      icon={<PictureOutlined />}
+                      style={{ width: '100%' }}
+                    >
                       Seleccionar Imagen
                     </Button>
                   </Upload>
                 </div>
               }
-          />
+            />
           </Col>
         </Row>
 
@@ -238,15 +271,15 @@ const ConductoresEditCard = () => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleFormSubmit}
+          enableReinitialize
         >
           {({ errors, isValid }) => (
             <Form>
               <Row
                 gutter={100}
-                style={{ marginBottom: "18px", justifyContent: "center" }}
+                style={{ marginBottom: '18px', justifyContent: 'center' }}
               >
                 <Col>
-
                   <Row style={{ marginBottom: '18px' }} gutter={[16, 16]}>
                     <Col xs={24}>
                       <Meta
@@ -262,7 +295,9 @@ const ConductoresEditCard = () => {
                               name="name"
                               as={Input}
                               placeholder="Sin asignar"
-                              prefix={<FontColorsOutlined style={{ color: 'red' }} />}
+                              prefix={
+                                <FontColorsOutlined style={{ color: 'red' }} />
+                              }
                               style={{ width: '100%' }}
                             />
                           </Row>
@@ -274,7 +309,8 @@ const ConductoresEditCard = () => {
                       <Meta
                         title={
                           <Row>
-                            Fecha de nacimiento<span style={{ color: 'red' }}>*</span>
+                            Fecha de nacimiento
+                            <span style={{ color: 'red' }}>*</span>
                           </Row>
                         }
                         description={
@@ -285,7 +321,9 @@ const ConductoresEditCard = () => {
                                   {...field}
                                   placeholder="Fecha de nacimiento"
                                   style={{ width: '100%' }}
-                                  onChange={(date) => form.setFieldValue('bdayDate', date)}
+                                  onChange={(date) =>
+                                    form.setFieldValue('bdayDate', date)
+                                  }
                                 />
                               )}
                             </Field>
@@ -296,7 +334,6 @@ const ConductoresEditCard = () => {
                   </Row>
 
                   <Row style={{ marginBottom: '18px' }} gutter={[16, 16]}>
-
                     <Col xs={24}>
                       <Meta
                         title={
@@ -311,7 +348,9 @@ const ConductoresEditCard = () => {
                               name="phone"
                               as={Input}
                               placeholder="Sin asignar"
-                              prefix={<NumberOutlined style={{ color: 'red' }} />}
+                              prefix={
+                                <NumberOutlined style={{ color: 'red' }} />
+                              }
                               style={{ width: '100%' }}
                             />
                           </Row>
@@ -341,53 +380,19 @@ const ConductoresEditCard = () => {
                     </Col>
                   </Row>
 
-                  <Row style={{ marginBottom: '18px' }} gutter={[16, 16]}>
-                    <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                      <Meta
-                        title={
-                          <Row>
-                            Contraseña<span style={{ color: 'red' }}>*</span>
-                          </Row>
-                        }
-                        description={
-                          <Row>
-                            <Field
-                              type="password"
-                              name="password"
-                              as={Input.Password}
-                              placeholder="Sin asignar"
-                              iconRender={(visible) => (visible ? <EyeInvisibleOutlined style={{ color: 'red' }} /> : <EyeOutlined style={{ color: 'red' }} />)}
-                            />
-                          </Row>
-                        }
-                      />
-                    </Col>
-
-                    <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                      <Meta
-                        title={
-                          <Row>
-                            Repetir contraseña<span style={{ color: 'red' }}>*</span>
-                          </Row>
-                        }
-                        description={
-                          <Row>
-                            <Field
-                              type="password"
-                              name="confirmPassword"
-                              as={Input.Password}
-                              placeholder="Sin asignar"
-                              iconRender={(visible) => (visible ? <EyeInvisibleOutlined style={{ color: 'red' }} /> : <EyeOutlined style={{ color: 'red' }} />)}
-                            />
-                          </Row>
-                        }
-                      />
-                    </Col>
-                  </Row>
-
                   {Object.keys(errors).length > 0 && (
-                    <div style={{ color: 'red', background: '#BDC3FF', padding: '10px', marginBottom: '10px', borderRadius: '10px' }}>
-                      <p style={{ fontWeight: 'bold' }}>Hay errores en el formulario. Por favor, revísalos:</p>
+                    <div
+                      style={{
+                        color: 'red',
+                        background: '#BDC3FF',
+                        padding: '10px',
+                        marginBottom: '10px',
+                        borderRadius: '10px',
+                      }}
+                    >
+                      <p style={{ fontWeight: 'bold' }}>
+                        Hay errores en el formulario. Por favor, revísalos:
+                      </p>
                       <ul>
                         {Object.keys(errors).map((fieldName, index) => (
                           <li key={index}>{errors[fieldName]}</li>
@@ -396,9 +401,16 @@ const ConductoresEditCard = () => {
                     </div>
                   )}
 
-                  <Row gutter={16} style={{ marginBottom: '18px', justifyContent: 'center', alignItems: 'center', }}>
+                  <Row
+                    gutter={16}
+                    style={{
+                      marginBottom: '18px',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
                     <Col>
-                      <Link to="/unidades">
+                      <Link to="/conductores">
                         <Button
                           type="primary"
                           style={{
@@ -426,16 +438,14 @@ const ConductoresEditCard = () => {
                       </Button>
                     </Col>
                   </Row>
-
                 </Col>
               </Row>
             </Form>
           )}
         </Formik>
-
       </Card>
     </>
-  );
-};
+  )
+}
 
-export default ConductoresEditCard;
+export default ConductoresRegisterCard

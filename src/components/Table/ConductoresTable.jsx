@@ -32,9 +32,11 @@ const ConductoresTable = () => {
     }
   };
 
-  const handleClick = () => {
+  const handleClick = (id) => {
     navigate("/conductoresEdit");
+    localStorage.setItem("idDriver",id);
   };
+
 
   const handleDeleteUnidad = async (id) => {
     try {
@@ -115,7 +117,7 @@ const ConductoresTable = () => {
       dataIndex: "acciones",
       render: (text, record) => (
         <Space size="middle">
-          <Button icon={<EditOutlined />} onClick={handleClick} />
+          <Button icon={<EditOutlined />} onClick={()=>{handleClick(record.key)}} />
           <Button icon={<DeleteOutlined/>} onClick={()=>{handleDeleteUnidad(record.key)}} />
         </Space>
       ),

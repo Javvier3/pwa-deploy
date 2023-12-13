@@ -19,11 +19,11 @@ function App() {
       <Route path="/viajesRegister/:idViaje" element={<ViajesRegisterAndEdit isNew={false} />} />
       <Route path="/paradasRegister" element={<ParadasRegisterAndEdit />} />
       <Route path='/unidadesRegister' element={<UnidadesRegister/>}></Route>
-      <Route path='/unidadesEdit' element={<UnidadesEdit/>}></Route>
       <Route path="/conductores" element={<Conductores />} />
       <Route path='/conductoresRegister' element={<ConductoresRegister />}></Route>
       <Route path='/conductoresEdit' element={<ConductoresEdit />}></Route>
       <Route path="/unidades" element={<Unidades />} />
+      <Route path='/unidadesEdit' element={<UnidadesEdit />} />
       <Route path="/logout" element={<Login />} />
     </Routes>
   );

@@ -30,7 +30,8 @@ const UnidadesTable = () => {
   };
 
   const handleClick = (id) => {
-    navigate("/unidadesEdit");
+    navigate(`/unidadesEdit`);
+    localStorage.setItem("idUnidad",id);
   };
 
   const handleDeleteUnidad = async (id) => {
@@ -123,7 +124,7 @@ const UnidadesTable = () => {
       dataIndex: "acciones",
       render: (text, record) => (
         <Space size="middle">
-          <Button icon={<EditOutlined />} onClick={handleClick} />
+          <Button icon={<EditOutlined />} onClick={()=>{handleClick(record.key)}} />
           <Button icon={<DeleteOutlined/>} onClick={()=>{handleDeleteUnidad(record.key)}} />
         </Space>
       ),

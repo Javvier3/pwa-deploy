@@ -5,13 +5,14 @@ import { Layout } from "antd";
 import CardUnidadesEdit from "../../../components/Cards/CardUnidadesEdit";
 
 const UnidadesEdit = () => {
+ const id = localStorage.getItem("idUnidad");
   return (
     <>
       <Sidebar>
         <Layout>
           <Row justify="center" style={{ minHeight: "100vh" }}>
             <Col span={24} style={{ maxWidth: "100%" }}>
-              <CardUnidadesEdit />
+              <CardUnidadesEdit id={id}/>
             </Col>
           </Row>
         </Layout>

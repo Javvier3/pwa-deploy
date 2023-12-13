@@ -145,7 +145,7 @@ const ConductoresRegisterCard = () => {
             .then((res) => {
               if (res.data.message === "Ok") {
                 Swal.fire("Registro realizado con éxito", "", "success").then(() => {
-                  window.location.href = "/conductoresRegister";
+                  window.location.href = "/conductores";
                 });
               } else {
                 Swal.fire("No se pudo realizar el registro", "", "error");

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Select, DatePicker, Col, Row, Input, Upload, Button } from 'antd';
 import {
   CarOutlined,
@@ -14,41 +14,40 @@ import { Link } from "react-router-dom";
 import defaultimg from "../../assets/images/default.jpg"
 
 import '../../screens/Viajes/Viajes.css';
+import { getVehiculoById, saveVehiculo, updateVehiculo } from '../../service/unidades/serviceUnidades';
+
+import dayjs from 'dayjs'
+import es from 'dayjs/locale/es'
+
+dayjs.locale('es')
+
 
 const { Option } = Select;
 const { Meta } = Card;
 
 const validationSchema = Yup.object().shape({
-  ak: Yup.string()
-    .min(5, "El alias de la unidad debe contener al menos 5 caracteres")
+  alias: Yup.string()
+    .min(3, "El alias de la unidad debe contener al menos 3 caracteres")
     .max(12, "El alias de la unidad es muy grande")
     .matches(
       /^[a-zA-Z0-9]*$/,
       "El alias de la unidad solo puede contener letras y numeros"
     )
     .required("El campo Alias es requerido"),
-  year: Yup.date()
+  anio: Yup.date()
     .required("El campo Año es requerido"),
-  type: Yup.string()
+  tipo: Yup.string()
     .required("El campo Tipo es requerido"),
-  plate: Yup.string()
-    .min(6, "La descripción de la parada debe contener al menos 5 letras")
-    .max(8, "La descripción de la parada es muy grande")
-    .matches(
-      /^[a-zA-Z0-9]*$/,
-      "La placa de la unidad solo puede estar compuesta por letras y numeros"
-    )
-    .required("El campo Placa es requerido"),
   marca: Yup.string()
-    .min(5, "La marca de la unidad debe contener al menos 5 letras")
+    .min(3, "La marca de la unidad debe contener al menos 3 letras")
     .max(16, "La marca de la unidad es muy grande")
     .matches(
       /^[a-zA-Z\s]+$/,
       "La marca de la unidad solo puede contener letras y espacios"
     )
     .required("El campo Marca es requerido"),
-  model: Yup.string()
-    .min(5, "El modelo de la unidad debe contener al menos 5 letras")
+  modelo: Yup.string()
+    .min(3, "El modelo de la unidad debe contener al menos 3 letras")
     .max(16, "El modelo de la unidad es muy grande")
     .matches(
       /^[a-zA-Z\s]+$/,
@@ -57,18 +56,36 @@ const validationSchema = Yup.object().shape({
     .required("El campo Modelo es requerido"),
 });
 
-const CardUnidadesRegisterEdit = () => {
+const CardUnidadesEdit = () => {
 
-  const [markers, setMarkers] = useState([]);
+  const [vehiculoData, setVehiculoData] = useState({});
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getVehiculoById(localStorage.getItem('idUnidad'));
+        setVehiculoData(response.data.object);
+      } catch (error) {
+        // Handle error here
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Use default values or provide fallbacks for the properties to avoid potential errors
   const initialValues = {
-    ak: "",
-    year: "",
-    type: "",
-    plate: "",
-    marca: "",
-    model: "",
+    alias: vehiculoData.alias || '',
+    anio: dayjs().set('year', vehiculoData.anio).startOf('year'),
+    tipo: vehiculoData.tipo,
+    marca: vehiculoData.marca || '',
+    modelo: vehiculoData.modelo || '',
+    
   };
+
+  console.log(vehiculoData)
+  
   const [image, setImage] = useState(null);
 
   const handleImageChange = (info) => {
@@ -81,7 +98,7 @@ const CardUnidadesRegisterEdit = () => {
   const handleRemoveImage = () => {
     setImage(null);
   };
-  
+
   const dummyRequest = ({ onSuccess }) => {
     setTimeout(() => {
       onSuccess('ok');
@@ -96,63 +113,59 @@ const CardUnidadesRegisterEdit = () => {
     return true;
   };
 
+
   const handleFormSubmit = async (values) => {
     try {
-      if (markers && markers.length > 0) {
-        const result = await Swal.fire({
-          title: "Seguro de que quieres registrar la unidad?",
-          showDenyButton: false,
-          showCancelButton: true,
-          confirmButtonText: "Registrar",
-          confirmButtonColor: "#7280FF",
-          denyButtonText: `Cancelar`,
-          cancelButtonText: "Cancelar",
-        });
+      
+      const result = await Swal.fire({
+        title: "Seguro de que quieres registrar la unidad?",
+        showDenyButton: false,
+        showCancelButton: true,
+        confirmButtonText: "Registrar",
+        confirmButtonColor: "#7280FF",
+        denyButtonText: `Cancelar`,
+        cancelButtonText: "Cancelar",
+      });
 
-        if (result.isConfirmed) {
-          /*
-          CONSUMO
+      if (result.isConfirmed) {
+        let numAsientos = values.tipo === "Automovil" ? 3 : 20;
 
-          await saveOrUpdateParada(
-            values.nombreParada,
-            values.descripcionParada,
-            markers[0].lat,
-            markers[0].lng
-          )
-            .then((res) => {
-              if (res.data.message === "Ok") {
-                Swal.fire("Registro realizado con éxito", "", "success").then(() => {
-                  window.location.href = "/viajesRegister";
-                });
-              } else {
-                Swal.fire("No se pudo realizar el registro", "", "error");
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-              Swal.fire("No se pudo realizar el registro", "", "error");
-            });
-          */
-        } else if (result.isDenied) {
-          Swal.fire("Cambios cancelados", "", "info");
+        console.log(localStorage.getItem('idUnidad'))
+        const res = await updateVehiculo(
+          values.anio.year(),
+          values.marca,
+          values.modelo,
+          values.tipo,
+          numAsientos,
+          values.alias,
+          localStorage.getItem('idUnidad')
+        );
+
+        console.log(res);
+
+        if (!res.data.error) {
+          Swal.fire("Registro realizado con éxito", "", "success").then(() => {
+            window.location.href = "/unidades";
+          });
+        } else {
+          Swal.fire("No se pudo realizar el registro", "", "error");
         }
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error al registrar",
-          text: "No puedes registrar una parada sin coordenadas, por favor, ingresa una ubicación válida.",
-        });
+      } else if (result.isDenied) {
+        Swal.fire("Cambios cancelados", "", "info");
       }
+        
     } catch (error) {
       console.error(error);
+      Swal.fire("No se pudo realizar el registro", "", "error");
     }
   };
+  
 
   return (
     <>
       <Card
         className="cardsita"
-        title="Editar informacion de la unidad"
+        title="Informacion de la unidad"
         style={{ height: "100%" }}
       >
 
@@ -220,12 +233,14 @@ const CardUnidadesRegisterEdit = () => {
                 </div>
               }
             />
+
           </Col>
         </Row>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleFormSubmit}
+          enableReinitialize
         >
           {({ errors, isValid }) => (
             <Form>
@@ -247,7 +262,7 @@ const CardUnidadesRegisterEdit = () => {
                           <Row>
                             <Field
                               type="text"
-                              name="ak"
+                              name="alias"
                               as={Input}
                               placeholder="Sin asignar"
                               prefix={<FontColorsOutlined style={{ color: 'red' }} />}
@@ -266,18 +281,18 @@ const CardUnidadesRegisterEdit = () => {
                           </Row>
                         }
                         description={
-                          <Row>
-                            <Field name="year">
-                              {({ field, form }) => (
-                                <DatePicker
-                                  {...field}
-                                  placeholder="Año"
-                                  style={{ width: '100%' }}
-                                  onChange={(date) => form.setFieldValue('year', date)}
-                                />
-                              )}
-                            </Field>
-                          </Row>
+                          <Field name="anio">
+                            {({ field, form }) => (
+                              <DatePicker
+                              locale={es}
+                                picker='year'
+                                {...field}
+                                placeholder="Año"
+                                style={{ width: '100%' }}
+                                onChange={(value) => form.setFieldValue(field.name, value)}
+                              />
+                            )}
+                          </Field>
                         }
                       />
                     </Col>
@@ -293,16 +308,16 @@ const CardUnidadesRegisterEdit = () => {
                         }
                         description={
                           <Row>
-                            <Field name="type">
+                            <Field name="tipo">
                               {({ field, form }) => (
                                 <Select
-                                  {...field}
-                                  placeholder="Tipo"
+                                  placeholder="Sin asignar"
                                   style={{ width: '100%' }}
-                                  onSelect={(value) => form.setFieldValue('type', value)}
+                                  onSelect={(value) => form.setFieldValue('tipo', value)}
+
                                 >
                                   <Option value="Automovil">Automóvil</Option>
-                                  <Option value="Van">Van</Option>
+                                  <Option value="Van" >Van</Option>
                                 </Select>
                               )}
                             </Field>
@@ -310,7 +325,6 @@ const CardUnidadesRegisterEdit = () => {
                         }
                       />
                     </Col>
-
                   </Row>
 
                   <Row style={{ marginBottom: '18px' }} gutter={[16, 16]}>
@@ -346,7 +360,7 @@ const CardUnidadesRegisterEdit = () => {
                           <Row>
                             <Field
                               type="text"
-                              name="model"
+                              name="modelo"
                               as={Input}
                               placeholder="Sin asignar"
                               prefix={<CarOutlined style={{ color: 'red' }} />}
@@ -385,7 +399,7 @@ const CardUnidadesRegisterEdit = () => {
                             background: '#FB1506',
                           }}
                         >
-                          Cancelar
+                          Cancelar edición
                         </Button>
                       </Link>
                     </Col>
@@ -416,4 +430,4 @@ const CardUnidadesRegisterEdit = () => {
   );
 };
 
-export default CardUnidadesRegisterEdit;
+export default CardUnidadesEdit;

@@ -18,7 +18,9 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
   onChangedConductor, setOnChangedConductor,
   onChangedUnidad, setOnChangedUnidad,
   onChangedDate, setOnChangedDate,
-  onChangedViajeName, setOnChangedViajeName}) => {
+  onChangedViajeName, setOnChangedViajeName,
+  setHoraViaje,horaViaje
+}) => {
 
   const [rutas, setRutas] = useState([]);
   const [loading, setLoading] = useState(false)
@@ -125,7 +127,8 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
                 nuevoViajeData.nombre,
                 responseRegistroRuta.data.object.idRuta,
                 nuevoViajeData.vehiculo,
-                nuevoViajeData.conductor
+                nuevoViajeData.conductor,
+                nuevoViajeData.hora
               ).then((responseViaje) => {
                 if (responseViaje.status === 201) {
                   Swal.fire({
@@ -231,7 +234,8 @@ const ParadasTable = ({nuevoViajeData, setNuevoViajeData,paradasData, setParadas
                 responseRegistroRuta.data.object.idRuta,
                 nuevoViajeData.vehiculo,
                 nuevoViajeData.conductor,
-                viajeData.idViaje
+                viajeData.idViaje,
+                nuevoViajeData.hora
               ).then(async (responseUpdateViaje) => {
                 if (responseUpdateViaje.status === 201) {
                   await Swal.fire({

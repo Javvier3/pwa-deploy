@@ -10,6 +10,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import locale from "antd/es/date-picker/locale/es_ES";
+import moment from "moment";
 import "dayjs/locale/es";
 
 dayjs.extend(customParseFormat);
@@ -18,6 +19,7 @@ const ViajesRegisterAndEdit = ({ isNew }) => {
   const [paradasData, setParadasData] = useState([]);
   const [viajeData, setViajeData] = useState(null);
   const [fecha, setFecha] = useState("0000-00-00");
+  const [horaViaje, setHoraViaje] = useState("");
   let [nuevoViajeData, setNuevoViajeData] = useState({})
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [nombreViaje, setNombreViaje] = useState("")
@@ -27,6 +29,7 @@ const ViajesRegisterAndEdit = ({ isNew }) => {
   const [onChangedConductor, setOnChangedConductor] = useState(false)
   const [onChangedUnidad, setOnChangedUnidad] = useState(false)
   const [onChangedDate, setOnChangedDate] = useState(false)
+  const [onChangedTimeViaje, setOnChangedTimeViaje] = useState(false)
   const [onChangedViajeName, setOnChangedViajeName] = useState(false)
 
   const { idViaje } = useParams();
@@ -49,7 +52,6 @@ useEffect(() => {
 }, [isNew, idViaje]);
 
 
-
   if (isNew) {
     nuevoViajeData = {
       fechaViaje: dayjs(fecha).format("YYYY-MM-DD"),
@@ -57,6 +59,7 @@ useEffect(() => {
       num_asientos_disponibles: 0,
       vehiculo: selectedUnidad,
       conductor: selectedConductor,
+      hora: horaViaje
     };
   } else if (!isNew && viajeData) {
     // Verifica que viajeData tenga datos antes de actualizar nuevoViajeData
@@ -66,6 +69,7 @@ useEffect(() => {
       num_asientos_disponibles: 0,
       vehiculo: !onChangedUnidad ? viajeData.vehiculo.idVehiculo : selectedUnidad,
       conductor: !onChangedConductor ? viajeData.conductor.idConductor : selectedConductor,
+      hora: !onChangedTimeViaje ? viajeData.hora : horaViaje
     };
   }
 
@@ -114,6 +118,8 @@ useEffect(() => {
                 setSelectedUnidad={setSelectedUnidad}
                 setFecha={setFecha}
                 fecha={fecha}
+                setHoraViaje={setHoraViaje}
+                horaViaje={horaViaje}
                 onChangedConductor={onChangedConductor}
                 setOnChangedConductor={setOnChangedConductor}
                 onChangedUnidad={onChangedUnidad}
@@ -122,6 +128,10 @@ useEffect(() => {
                 setOnChangedDate={setOnChangedDate}
                 onChangedViajeName={onChangedViajeName}
                 setOnChangedViajeName={setOnChangedViajeName}
+                onChangedTimeViaje={onChangedTimeViaje}
+                setOnChangedTimeViaje={setOnChangedTimeViaje}
+                nuevoViajeData={nuevoViajeData}
+                setNuevoViajeData={setNuevoViajeData}
                 />
               </Row>
             </Form>
@@ -156,6 +166,8 @@ useEffect(() => {
               setOnChangedDate={setOnChangedDate}
               onChangedViajeName={onChangedViajeName}
               setOnChangedViajeName={setOnChangedViajeName}
+              setHoraViaje={setHoraViaje}
+              horaViaje={horaViaje}
               />
             </Col>
           </Row>

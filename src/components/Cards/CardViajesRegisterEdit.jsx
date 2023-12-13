@@ -1,6 +1,6 @@
 // CardViajesRegisterEdit.jsx
 import React, { useState, useEffect } from "react";
-import { Card, Select, DatePicker, Col, Row, Input } from "antd";
+import { Card, Select, DatePicker,TimePicker, Col, Row, Input } from "antd";
 import { ConfigProvider } from "antd";
 import { Field, ErrorMessage } from "formik";
 import {
@@ -8,7 +8,8 @@ import {
   CalendarOutlined,
   UserOutlined,
   CarOutlined,
-  FileTextOutlined
+  FileTextOutlined,
+  FieldTimeOutlined
 } from "@ant-design/icons";
 import "../../screens/Viajes/Viajes.css";
 import { getAllConductores } from "../../service/conductores/serviceConductores";
@@ -24,17 +25,20 @@ const { Meta } = Card;
 
 
 
-const CardViajesRegisterEdit = ({nuevoViajeData,selectedRowKeys, isNew, viajeData, selectedConductor, setSelectedConductor, selectedUnidad, setSelectedUnidad, fecha, setFecha,
+const CardViajesRegisterEdit = ({nuevoViajeData,setNuevoViajeData, selectedRowKeys, isNew, viajeData, selectedConductor, setSelectedConductor, selectedUnidad, setSelectedUnidad, fecha, setFecha,
   setNombreViaje, nombreViaje
   , onChangedConductor, setOnChangedConductor,
   onChangedUnidad, setOnChangedUnidad,
   onChangedDate, setOnChangedDate,
-  onChangedViajeName, setOnChangedViajeName
+  onChangedViajeName, setOnChangedViajeName,
+  onChangedTimeViaje,setOnChangedTimeViaje,
+  setHoraViaje,horaViaje
 
 
 }) => {
   const [conductores, setConductores] = useState([]);
   const [unidades, setUnidades] = useState([]);
+  const format = 'HH:mm';
 
   useEffect(() => {
     // Cargar datos de conductores y unidades al montar el componente
@@ -60,6 +64,8 @@ const CardViajesRegisterEdit = ({nuevoViajeData,selectedRowKeys, isNew, viajeDat
     fetchUnidades();
   }, []);
 
+  console.log(nuevoViajeData)
+  
 
 
   return (
@@ -88,21 +94,26 @@ const CardViajesRegisterEdit = ({nuevoViajeData,selectedRowKeys, isNew, viajeDat
                     setNombreViaje(event.target.value); // Usar event.target.value para obtener el valor del campo
                   }}
                 />
-
-                {/* <ErrorMessage
-                  name="nombreViaje"
-                  component="div"
-                  style={{
-                    color: "#FB1506",
-                    marginLeft: "8px",
-                    marginTop: "10px",
-                    fontFamily: "CircularSTD",
-                  }}
-                /> */}
-                
-
               </Row>
-              <Row>
+
+              <Row style={{ marginBottom: "18px" }}>
+                <FieldTimeOutlined style={{ fontSize: "24px", color: "#FB1506", marginBottom: "10px" }} />
+                <Meta title="Hora del viaje" style={{ marginLeft: "10px" }} />
+                <Field
+                  type="text"
+                  name="horaViaje"
+                  as={Input}
+                  placeholder="Sin asignar"
+                  style={{ marginTop: "5px", marginLeft: "8px" }}
+                  value={viajeData && !onChangedTimeViaje ? viajeData.hora : horaViaje}
+                  onChange={(event) => {
+                    setOnChangedTimeViaje(true);
+                    setHoraViaje(event.target.value); // Usar event.target.value para obtener el valor del campo
+                  }}
+                />
+              </Row>
+
+              <Row style={{marginTop:"20px"}}>
                 <CalendarOutlined style={{ fontSize: "24px", color: "#FB1506", marginBottom: "10px" }} />
                 <Meta title="Fecha de Viaje" style={{ marginLeft: "10px" }} />
                 <ConfigProvider locale={es}>
@@ -113,6 +124,7 @@ const CardViajesRegisterEdit = ({nuevoViajeData,selectedRowKeys, isNew, viajeDat
                   }} />
                 </ConfigProvider>
               </Row>
+
             </Card>
           </Col>
       

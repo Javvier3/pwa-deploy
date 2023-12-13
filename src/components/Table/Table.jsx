@@ -93,6 +93,7 @@ const CustomTable = ({viajesData, setViajesData}) => {
     conductor: viaje.conductor.usuario.nombre,
     origen: viaje.ruta.paradas[0].nombre,
     destino: viaje.ruta.paradas[viaje.ruta.paradas.length - 1].nombre,
+    hora: viaje.hora,
     puntosIntermedios: viaje.ruta.paradas.length,
     tipoUnidad: viaje.vehiculo.tipo,
     acciones: (
@@ -127,6 +128,12 @@ const CustomTable = ({viajesData, setViajesData}) => {
       title: "Destino",
       dataIndex: "destino",
       sorter: (a, b) => a.destino.localeCompare(b.destino),
+      responsive: ["md", "lg", "xl"],
+    },
+    {
+      title: "Hora de inicio",
+      dataIndex: "hora",
+      sorter: (a, b) => a.hora.localeCompare(b.hora),
       responsive: ["md", "lg", "xl"],
     },
     {

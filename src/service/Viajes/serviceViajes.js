@@ -5,7 +5,7 @@ const accessToken = localStorage.getItem('token');
 
 
 
-export const insertNewViaje = async (fechaViaje,nombre, ruta, vehiculo, conductor  ) => {
+export const insertNewViaje = async (fechaViaje,nombre, ruta, vehiculo, conductor, hora ) => {
   try {
     const response = await axios.post(
       createURL(['/viajes/']),
@@ -15,7 +15,8 @@ export const insertNewViaje = async (fechaViaje,nombre, ruta, vehiculo, conducto
         "num_asientos_disponibles": 0,
         "ruta":ruta,
         "vehiculo": vehiculo,
-        "conductor": conductor
+        "conductor": conductor,
+        "hora":hora
       },
       {
         headers: {
@@ -35,7 +36,7 @@ export const insertNewViaje = async (fechaViaje,nombre, ruta, vehiculo, conducto
 
 
 
-export const updateViajeById = async (fechaViaje,nombre, ruta, vehiculo, conductor,id  ) => {
+export const updateViajeById = async (fechaViaje,nombre, ruta, vehiculo, conductor,id, hora ) => {
   try {
     const response = await axios.post(
       createURL(['/viajes/']),
@@ -46,7 +47,8 @@ export const updateViajeById = async (fechaViaje,nombre, ruta, vehiculo, conduct
         "num_asientos_disponibles": 0,
         "ruta":ruta,
         "vehiculo": vehiculo,
-        "conductor": conductor
+        "conductor": conductor,
+        "hora": hora
       },
       {
         headers: {

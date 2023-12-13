@@ -118,7 +118,7 @@ const CardUnidadesEdit = () => {
     try {
       
       const result = await Swal.fire({
-        title: "Seguro de que quieres registrar la unidad?",
+        title: "Seguro de que quieres editar la unidad?",
         showDenyButton: false,
         showCancelButton: true,
         confirmButtonText: "Registrar",
@@ -144,11 +144,11 @@ const CardUnidadesEdit = () => {
         console.log(res);
 
         if (!res.data.error) {
-          Swal.fire("Registro realizado con éxito", "", "success").then(() => {
+          Swal.fire("Actualización realizada con éxito", "", "success").then(() => {
             window.location.href = "/unidades";
           });
         } else {
-          Swal.fire("No se pudo realizar el registro", "", "error");
+          Swal.fire("No se pudo realizar la actualización", "", "error");
         }
       } else if (result.isDenied) {
         Swal.fire("Cambios cancelados", "", "info");
@@ -156,7 +156,7 @@ const CardUnidadesEdit = () => {
         
     } catch (error) {
       console.error(error);
-      Swal.fire("No se pudo realizar el registro", "", "error");
+      Swal.fire("No se pudo realizar la actualización", "", "error");
     }
   };
   

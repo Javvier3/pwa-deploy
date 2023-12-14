@@ -1,0 +1,88 @@
+@import url('../../utils/fonts.css');
+
+.sidebar {
+    font-family: 'Pattaya'; /* Comillas para el nombre de la fuente */
+    font-size: 35px;
+    text-align: center;
+    align-items: center;
+    color: #fff;
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.logo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icons {
+    text-align: start;
+    font-family: 'CircularSTD'; /* Comillas para el nombre de la fuente */
+    font-stretch: 50%;
+}
+
+.menu-bar {
+    height: 88vh;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 1rem;
+    position: relative;
+}
+
+.icons.menu-bar .anticon {
+    font-size: 1.10em;
+}
+
+/* Resto de tus estilos... */
+
+.admin-text {
+    text-align: center;
+    font-family: 'CircularSTD'; /* Comillas para el nombre de la fuente */
+    font-stretch: 50%;
+    font-size: 10px;
+    color: #3B4276;
+}
+
+.srTitle {
+    margin-left: 8px;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-family: 'ProductSansBold'; /* Comillas para el nombre de la fuente */
+    font-size: 30px;
+    color: #3B4276;
+    line-height: 1;
+}
+
+@media screen and (max-width: 480px) {
+    .srTitle {
+        font-size: 18px;
+    }
+}
+
+@media screen and (min-width: 481px) and (max-width: 768px) {
+    .srTitle {
+        font-size: 24px;
+    }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .srTitle {
+        font-size: 28px;
+    }
+}
+
+@media screen and (min-width: 1025px) {
+    .srTitle {
+        font-size: 30px;
+    }
+}

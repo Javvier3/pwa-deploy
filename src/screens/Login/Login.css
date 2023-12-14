@@ -1,0 +1,35 @@
+@import url('../../utils/fonts.css');
+
+#outerDiv {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.PT {
+  font-family: Pattaya;
+  font-size: 61px;
+  text-align: center;
+}
+
+.PD {
+  font-family: ProductSansRegular;
+}
+
+.PDInput {
+  font-family: ProductSansRegular;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.logo-animation {
+  animation: slideInRight 1.5s ease-out;
+}
+
+@keyframes slideInRight {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

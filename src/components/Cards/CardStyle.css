@@ -1,0 +1,40 @@
+@import url('../../utils/fonts.css');
+
+.card-title, .card-desc {
+  font-family: 'ProductSansRegular';
+  display: flex;
+  justify-content: center;
+}
+
+.card-title {
+  font-size: 18px;
+  color: #8A92A6;
+  font-weight: 200;
+}
+
+.card-desc {
+  font-size: 21px;
+  color: #232D42;
+}
+
+/* Media queries para pantallas medianas (768px o menos) */
+@media screen and (max-width: 768px) {
+  .card-title {
+    font-size: 16px;
+  }
+
+  .card-desc {
+    font-size: 14px;
+  }
+}
+
+/* Media queries para pantallas pequeñas (480px o menos) */
+@media screen and (max-width: 480px) {
+  .card-title {
+    font-size: 17px;
+  }
+
+  .card-desc {
+    font-size: 14px; /* Oculta completamente la descripción en pantallas pequeñas */
+  }
+}
